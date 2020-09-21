@@ -1,0 +1,28 @@
+.nav {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100vh;
+    padding: 30px;
+    box-sizing: border-box;
+}
+
+.login {
+    width: 100%;
+    background-color: lightblue;
+    text-align: center;
+    height: 20px;
+    border-radius: 5px;
+
+}
+
+a {
+    padding-top: 60px;
+    width: 100%;
+    height: 5vh;
+    font-family: 'Ubuntu', sans-serif;
+    font-size: 24px;
+    text-decoration: none;
+    color: black;
+    box-sizing: border-box;
+}

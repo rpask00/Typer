@@ -1,0 +1,19 @@
+.box {
+    display: flex;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100vw;
+    height: 100vh;
+}
+
+.freespace {
+    flex-basis: 15%;
+}
+
+dashboard {
+    flex-basis: 70%;
+}
+
+nav {
+    flex-basis: 15%;
+}

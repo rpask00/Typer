@@ -1,0 +1,44 @@
+.stats {
+    display: flex;
+    justify-content: space-evenly;
+
+    p {
+        // font-family: 'Anton', sans-serif;
+        font-family: 'Kanit', sans-serif;
+        font-size: 25px;
+
+        span {
+            font-size: 50px;
+        }
+    }
+}
+
+
+
+.keyset {
+    font-family: 'Kanit', sans-serif;
+    font-size: 30px;
+    display: flex;
+    align-items: center;
+
+    .key {
+        font-size: 20px;
+        background-color: green;
+        width: 25px;
+        height: 25px;
+        margin: 3px;
+        text-align: center;
+    }
+
+    .label {
+        width: 100px;
+        height: 50px;
+        font-size: 30px;
+        margin-right: 20px;
+    }
+
+    .current {
+        width: 170px;
+        margin-right: 10px;
+    }
+}

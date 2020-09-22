@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import { of, BehaviorSubject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TypingService {
 
-  private stuckmode: boolean = false;
+  private stuckmode: boolean = true;
   private speed = new BehaviorSubject<number>(0)
   private mistakes = new BehaviorSubject<number>(0)
 

@@ -7,8 +7,6 @@ import { TypingService } from 'src/app/services/typing.service';
   styleUrls: ['./text-field.component.scss']
 })
 
-
-
 export class TextFieldComponent implements OnInit {
 
   sample: string[];

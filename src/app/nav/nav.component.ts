@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { TypingService } from '../services/typing.service';
 
 @Component({
   selector: 'nav',
@@ -7,9 +8,14 @@ import { Component, OnInit } from '@angular/core';
 })
 export class NavComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    private typingSv: TypingService
+  ) { }
 
-  ngOnInit(): void {
+  ngOnInit(): void { }
+
+  switchmode(e: any) {
+    this.typingSv.switchmode(e.target.checked)
   }
 
 }

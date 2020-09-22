@@ -3,6 +3,7 @@
     min-height: 2vh;
     background-color: var(--second-color);
 
+
     p {
         font-family: 'Ubuntu', sans-serif;
         font-size: 40px;
@@ -29,12 +30,11 @@
 }
 
 .wrong {
-    color: rgba(255, 255, 0, 0.597);
-    // text-shadow: 2px 2px 3px rgba(0, 0, 0, 0.64);
+    background-color: rgb(255, 0, 0);
 }
 
 .correct {
-    color: rgba(0, 0, 0, 0.4) !important;
+    color: rgba(0, 0, 0, 0.4);
 }
 
 .space {

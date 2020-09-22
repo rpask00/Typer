@@ -1,7 +1,7 @@
 <div class="box">
   <div class="stats">
-    <p>Speed: <span>56</span> wpm</p>
-    <p>Errors: <span>12</span></p>
+    <p>Speed: <span *ngIf='speed$ | async as s'>{{s}}</span> wpm</p>
+    <p>Errors: <span *ngIf='mistakes$ | async as m'>{{m}}</span></p>
   </div>
   <div class="keys">
     <div class="keyset">

@@ -23,6 +23,18 @@
       "css": "chart-line",
       "code": 59393,
       "src": "entypo"
+    },
+    {
+      "uid": "21b42d3c3e6be44c3cc3d73042faa216",
+      "css": "sliders",
+      "code": 61918,
+      "src": "fontawesome"
+    },
+    {
+      "uid": "e1a8092efb690eeb6c41d58b549e9074",
+      "css": "wrench-circled",
+      "code": 59394,
+      "src": "elusive"
     }
   ]
 }

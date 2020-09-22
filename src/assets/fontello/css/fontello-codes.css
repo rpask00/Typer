@@ -1,4 +1,6 @@
 
 .icon-users:before { content: '\e800'; } /* '' */
 .icon-chart-line:before { content: '\e801'; } /* '' */
+.icon-wrench-circled:before { content: '\e802'; } /* '' */
 .icon-gamepad:before { content: '\f11b'; } /* '' */
+.icon-sliders:before { content: '\f1de'; } /* '' */

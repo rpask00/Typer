@@ -1,5 +1,15 @@
-<div class="playground">
-  <p> Lorem ipsum dolor sit amet consectetur adipisicing elit Enim provident Lorem ipsum dolor sit amet consectetur
-    adipisicing elit Enim provident
+<div class="playground" (keydown)="handleKeyboardEvent($event)">
+  <p>
+    <span 
+    *ngFor="let sign of sample; let i = index" 
+    [attr.data-index]="i"
+    [class.active]='active == i' 
+    [class.wrong]='wrongs[i]' 
+    [class.correct]='corrects[i]' 
+    [class.space]='sign=="_"' >
+    {{sign}}
+  </span>
+
+  <span class="wrong">efsfsefsef</span>
   </p>
 </div>

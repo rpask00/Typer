@@ -1,5 +1,7 @@
 import { Component, OnInit, HostListener } from '@angular/core';
+import { Observable } from 'rxjs';
 import { TypingService } from 'src/app/services/typing.service';
+import { WordsSupplyService } from 'src/app/services/words-supply.service';
 
 @Component({
   selector: 'text-field',
@@ -19,9 +21,10 @@ export class TextFieldComponent implements OnInit {
   time: number = 0;
   samplelength: number = 0;
   timeInterval: NodeJS.Timeout
-
+  // sample_string:Observable<str>
   constructor(
-    private typingSv: TypingService
+    private typingSv: TypingService,
+    private wordsSupSv: WordsSupplyService,
   ) { }
 
   ngOnInit(): void {
@@ -66,10 +69,10 @@ export class TextFieldComponent implements OnInit {
 
   }
 
-  initSample() {
-    let sample_string: string = 'Lorem_ipsum_dolor_sit_amet_consectetu_Enimprovident_Lorem_ipsum_dolorsit_amet_consecteturadipisicing_elit_Enim_provident'
-    this.words_count = sample_string.split('_').length
-    this.sample = sample_string.toLowerCase().split('')
+  async initSample() {
+    let sample_words: string[] = await this.wordsSupSv.getWords(12, 'a')
+    this.words_count = sample_words.length
+    this.sample = sample_words.map(word => word.toLowerCase()).join('_').split('')
     this.samplelength = this.sample.length
     this.corrects = this.sample.map(e => false)
     this.wrongs = this.sample.map(e => false)
@@ -80,7 +83,9 @@ export class TextFieldComponent implements OnInit {
 
 
   loadSample() {
-    let speed: number = this.words_count / this.time * 60
+    // let speed: number = this.words_count / this.time * 60
+    let speed: number = this.samplelength / this.time * 60 / 4.5
+    console.log(this.words_count, this.time)
     speed = Math.round(speed)
     this.typingSv.update_speed_and_mistakes(speed, this.mistakes_count)
 

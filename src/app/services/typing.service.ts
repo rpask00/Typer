@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { AfterContentInit, Injectable, OnInit } from '@angular/core';
 import { BehaviorSubject, forkJoin, of } from 'rxjs';
 
 @Injectable({
@@ -11,12 +11,13 @@ export class TypingService {
   private mistakes = new BehaviorSubject<number>(0)
 
   private fetch_data = {
-    keyset: 'enitrlsauod',
+    keyset: 'ENITRLSAUOD',
     currentkey: 'e',
     words_count: 12,
   }
 
   constructor() { }
+
 
   switchmode(mode: boolean) {
     this.stuckmode = mode
@@ -27,10 +28,14 @@ export class TypingService {
   }
 
   getspeed$() {
+    of(45).subscribe(v => this.speed.next(v))
+
     return this.speed.asObservable()
   }
 
   getmistakes$() {
+    of(12).subscribe(v => this.mistakes.next(v))
+
     return this.mistakes.asObservable()
   }
 
@@ -38,6 +43,9 @@ export class TypingService {
     return of(this.fetch_data)
   }
 
+  gte_keyset$() {
+    return of(this.fetch_data.keyset)
+  }
 
   update_speed_and_mistakes(speed: number, mistakes: number) {
     this.speed.next(speed)

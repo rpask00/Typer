@@ -1,5 +1,4 @@
 import { Component, OnInit, HostListener } from '@angular/core';
-import { forkJoin, Observable } from 'rxjs';
 import { TypingService } from 'src/app/services/typing.service';
 import { WordsSupplyService } from 'src/app/services/words-supply.service';
 

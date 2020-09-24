@@ -1,5 +1,5 @@
 import { Component, OnInit, HostListener } from '@angular/core';
-import { Observable } from 'rxjs';
+import { forkJoin, Observable } from 'rxjs';
 import { TypingService } from 'src/app/services/typing.service';
 import { WordsSupplyService } from 'src/app/services/words-supply.service';
 
@@ -21,7 +21,7 @@ export class TextFieldComponent implements OnInit {
   time: number = 0;
   samplelength: number = 0;
   timeInterval: NodeJS.Timeout
-  // sample_string:Observable<str>
+
   constructor(
     private typingSv: TypingService,
     private wordsSupSv: WordsSupplyService,
@@ -70,7 +70,8 @@ export class TextFieldComponent implements OnInit {
   }
 
   async initSample() {
-    let sample_words: string[] = await this.wordsSupSv.getWords(12, 'a')
+    let fetch_data = await this.typingSv.get_fetch_data$().toPromise()
+    let sample_words: string[] = await this.wordsSupSv.getWords(fetch_data.words_count, fetch_data.currentkey, fetch_data.keyset)
     this.words_count = sample_words.length
     this.sample = sample_words.map(word => word.toLowerCase()).join('_').split('')
     this.samplelength = this.sample.length
@@ -83,7 +84,6 @@ export class TextFieldComponent implements OnInit {
 
 
   loadSample() {
-    // let speed: number = this.words_count / this.time * 60
     let speed: number = this.samplelength / this.time * 60 / 4.5
     console.log(this.words_count, this.time)
     speed = Math.round(speed)

@@ -1,12 +1,26 @@
 <div class='nav'>
-  <div class="login">Log in</div>
-  <a href="/practice"><i class="demo-icon icon-gamepad"></i> Practice</a>
-  <a href="stats"><i class="demo-icon icon-wrench-circled"></i>Settings</a>
-  <a href="/multi"><i class="demo-icon icon-users"></i>Multiplayer</a>
-  <a href="stats"><i class="demo-icon icon-chart-line"></i>Stats</a>
+
+
+  <div class="user" *ngIf='user$ | async as user; else login'>
+    <img [src]="user.photoUrl" alt="">
+    <p>{{user.name}} <br>
+      <a class="logout" (click)=logOut()>Log out</a>
+    </p>
+
+  </div>
+
+  <ng-template #login>
+    <button mat-raised-button color="primary" (click)=logIn()>Log in with Google</button>
+  </ng-template>
+
+
+  <a class='navel' href="/practice"><i class="demo-icon icon-gamepad"></i> Practice</a>
+  <a class='navel' href="stats"><i class="demo-icon icon-wrench-circled"></i>Settings</a>
+  <a class='navel' href="/multi"><i class="demo-icon icon-users"></i>Multiplayer</a>
+  <a class='navel' href="stats"><i class="demo-icon icon-chart-line"></i>Stats</a>
 
   <!-- Rounded switch -->
-  <div class='mode'>
+  <div class='navel mode'>
     Stuck mode
     <label class="switch">
       <input type="checkbox" [checked]=true (change)='switchmode($event)'>

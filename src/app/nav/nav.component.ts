@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { User } from '../models/user-model';
+import { Observable } from 'rxjs';
+import { AuthService } from '../services/auth.service';
 import { TypingService } from '../services/typing.service';
-
 @Component({
   selector: 'nav',
   templateUrl: './nav.component.html',
@@ -8,14 +10,30 @@ import { TypingService } from '../services/typing.service';
 })
 export class NavComponent implements OnInit {
 
-  constructor(
-    private typingSv: TypingService
-  ) { }
+  user$: Observable<User> | Observable<null>
 
-  ngOnInit(): void { }
+
+  constructor(
+    private typingSv: TypingService,
+    private authSV: AuthService,
+  ) {
+    this.user$ = authSV.user$
+  }
+
+  ngOnInit(): void {
+    this.user$.subscribe(console.log)
+  }
 
   switchmode(e: any) {
     this.typingSv.switchmode(e.target.checked)
+  }
+
+  logIn() {
+    this.authSV.logIn()
+  }
+
+  logOut() {
+    this.authSV.logOut()
   }
 
 }

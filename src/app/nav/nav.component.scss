@@ -17,11 +17,10 @@
     padding: 10px 0 10px 0;
 }
 
-div,
-a {
-    padding-top: 60px;
+.navel {
+    margin-bottom: 15px;
     width: 100%;
-    height: 5vh;
+    height: 6vh;
     font-family: 'Ubuntu', sans-serif;
     font-size: 24px;
     text-decoration: none;
@@ -92,4 +91,33 @@ input:checked+.slider:before {
 
 .slider.round:before {
     border-radius: 50%;
+}
+
+.user {
+    display: flex;
+    width: 100%;
+    height: 7vh;
+    margin-bottom: 13px;
+
+    img {
+        border-radius: 50%;
+        max-width: 70px;
+        max-height: 70px;
+    }
+
+    p {
+        font-family: 'Ubuntu', sans-serif;
+        margin-left: 10px;
+        font-size: large;
+
+        a {
+            color: var(--second-color);
+            cursor: pointer;
+            font-size: small;
+        }
+    }
+}
+
+button {
+    margin-bottom: 30px;
 }

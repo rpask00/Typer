@@ -17,3 +17,18 @@ dashboard {
 nav {
     flex-basis: 15%;
 }
+
+
+@media only screen and (max-width:1500px) {
+    .freespace {
+        flex-basis: 5%;
+    }
+
+    dashboard {
+        flex-basis: 75%;
+    }
+
+    nav {
+        flex-basis: 20%;
+    }
+}

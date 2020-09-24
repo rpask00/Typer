@@ -13,6 +13,7 @@ export class StatsComponent implements OnInit {
   speed$: Observable<number>
   mistakes$: Observable<number>
   keyset$: Observable<string[]>
+  currentkey$: Observable<string>
 
   constructor(
     private typingSV: TypingService
@@ -22,6 +23,7 @@ export class StatsComponent implements OnInit {
     this.speed$ = this.typingSV.getspeed$()
     this.mistakes$ = this.typingSV.getmistakes$()
     this.keyset$ = this.typingSV.gte_keyset$().pipe(map(keyset => keyset.split('')))
+    this.currentkey$ = this.typingSV.get_currentkey$()
   }
 
 }

@@ -11,8 +11,8 @@ export class TypingService {
   private mistakes = new BehaviorSubject<number>(0)
 
   private fetch_data = {
-    keyset: 'ENITRLSAUOD',
-    currentkey: 'e',
+    keyset: 'ENITRLS',
+    currentkey: 'E',
     words_count: 12,
   }
 
@@ -45,6 +45,10 @@ export class TypingService {
 
   gte_keyset$() {
     return of(this.fetch_data.keyset)
+  }
+
+  get_currentkey$() {
+    return of(this.fetch_data.currentkey)
   }
 
   update_speed_and_mistakes(speed: number, mistakes: number) {

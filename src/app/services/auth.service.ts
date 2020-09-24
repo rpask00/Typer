@@ -19,8 +19,7 @@ export class AuthService {
   ) {
     this.user$ = this.afAuth.user.pipe(switchMap(user => {
       if (user) return this.adDatabase.object('users/' + user.uid).valueChanges() as Observable<User>
-
-      return of(null) as Observable<null>
+      return of(null)
     }))
   }
 

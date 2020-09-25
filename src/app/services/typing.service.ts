@@ -1,23 +1,49 @@
-import { AfterContentInit, Injectable, OnInit } from '@angular/core';
-import { BehaviorSubject, forkJoin, of } from 'rxjs';
+import { Injectable, OnInit } from '@angular/core';
+import { AngularFireAuth } from '@angular/fire/auth';
+import { AngularFireDatabase } from '@angular/fire/database';
+import { BehaviorSubject, of } from 'rxjs';
+import { take } from 'rxjs/operators';
+import { Fetch_Data, Stats } from '../models/user-model';
 
 @Injectable({
   providedIn: 'root'
 })
-export class TypingService {
+export class TypingService implements OnInit {
 
   private stuckmode: boolean = true;
   private speed = new BehaviorSubject<number>(0)
   private mistakes = new BehaviorSubject<number>(0)
 
-  private fetch_data = {
+  private fetch_data: Fetch_Data = {
     keyset: 'ENITRLS',
     currentkey: 'E',
     words_count: 12,
   }
 
-  constructor() { }
+  constructor(
+    private afDB: AngularFireDatabase,
+    private afAuth: AngularFireAuth
+  ) {
 
+  }
+
+  ngOnInit(): void {
+    this.afAuth.user.pipe(take(1)).subscribe(user => {
+      if (user) {
+        this.afDB.object('users/' + user.uid + '/stats').valueChanges().pipe(take(1)).subscribe((stats: Stats) => {
+          console.log(stats)
+          this.mistakes.next(stats.lastErrors)
+          this.speed.next(stats.lastSpeed)
+        })
+      } else {
+        this.mistakes.next(0)
+        this.speed.next(0)
+      }
+
+    })
+  }
+
+  
 
   switchmode(mode: boolean) {
     this.stuckmode = mode
@@ -28,13 +54,10 @@ export class TypingService {
   }
 
   getspeed$() {
-    of(45).subscribe(v => this.speed.next(v))
-
     return this.speed.asObservable()
   }
 
   getmistakes$() {
-    of(12).subscribe(v => this.mistakes.next(v))
 
     return this.mistakes.asObservable()
   }
@@ -51,7 +74,7 @@ export class TypingService {
     return of(this.fetch_data.currentkey)
   }
 
-  update_speed_and_mistakes(speed: number, mistakes: number) {
+  update_stats(speed: number, mistakes: number) {
     this.speed.next(speed)
     this.mistakes.next(mistakes)
   }

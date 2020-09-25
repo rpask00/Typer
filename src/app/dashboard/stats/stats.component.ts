@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { TypingService } from 'src/app/services/typing.service';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'stats',
@@ -20,8 +20,9 @@ export class StatsComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    console.log('stats')
     this.speed$ = this.typingSV.getspeed$()
-    this.mistakes$ = this.typingSV.getmistakes$()
+    this.mistakes$ = this.typingSV.getmistakes$().pipe(tap(console.log))
     this.keyset$ = this.typingSV.gte_keyset$().pipe(map(keyset => keyset.split('')))
     this.currentkey$ = this.typingSV.get_currentkey$()
   }

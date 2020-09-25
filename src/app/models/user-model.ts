@@ -2,9 +2,20 @@ export interface User {
     name: string,
     photoUrl: string,
     email: string,
+    stuckMode: boolean,
+    stats: Stats
+}
+
+export interface Stats {
     averageSpeed: number,
     lastSpeed: number,
     averageErrors: number,
     lastErrors: number,
-    stuckMode: boolean,
+    samples: number,
+}
+
+export interface Fetch_Data {
+    keyset: string,
+    currentkey: string,
+    words_count: number,
 }

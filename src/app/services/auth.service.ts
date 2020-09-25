@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth'
-import { User } from '../models/user-model';
+import { Stats, User } from '../models/user-model';
 import { Observable, of } from 'rxjs';
 import { auth } from 'firebase';
 import { AngularFireDatabase } from '@angular/fire/database';
-import { map, switchMap } from 'rxjs/operators';
+import { map, switchMap, take, tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -39,11 +39,19 @@ export class AuthService {
       name: credentials.user.displayName,
       photoUrl: credentials.user.photoURL,
       email: credentials.user.email,
-      averageSpeed: 0,
-      lastSpeed: 0,
-      averageErrors: 0,
-      lastErrors: 0,
+      stats: {
+        averageSpeed: 0,
+        lastSpeed: 0,
+        averageErrors: 0,
+        lastErrors: 0,
+        samples: 0,
+      },
       stuckMode: true,
     })
   }
+
+  updateStats(stats: Stats): void {
+    this.afAuth.user.pipe(take(1), tap(user => this.adDatabase.object('users/' + user.uid + '/stats').set(stats)))
+  }
+
 }

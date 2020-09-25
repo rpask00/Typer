@@ -36,7 +36,6 @@ export class TextFieldComponent implements OnInit {
     let iSstuckMode: boolean = this.typingSv.getmode()
     let key: string = event.key;
 
-    console.log(key)
     if (key == ' ')
       key = '_'
 
@@ -114,9 +113,8 @@ export class TextFieldComponent implements OnInit {
 
   loadSample() {
     let speed: number = this.samplelength / this.time * 60 / 4.5
-    console.log(this.words_count, this.time)
     speed = Math.round(speed)
-    this.typingSv.update_speed_and_mistakes(speed, this.mistakes_count)
+    this.typingSv.update_stats(speed, this.mistakes_count)
 
     this.initSample()
   }

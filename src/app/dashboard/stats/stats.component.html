@@ -1,11 +1,11 @@
 <div class="box">
   <div class="stats">
-    <p>Speed: <span *ngIf='speed$ | async as s'>{{s}}</span> wpm</p>
-    <p>Errors: <span *ngIf='mistakes$ | async as m'>{{m}}</span></p>
+    <p>Speed:<span *ngIf='speed$ | async as s; else zero'>{{s}}</span> wpm</p>
+    <p>Errors:<span *ngIf='mistakes$ | async as m ; else zero'>{{m}}</span></p>
   </div>
   <div class="keys">
     <div *ngIf='keyset$ | async as keyset' class="keyset">
-      <label >Keyset:</label>
+      <label>Keyset:</label>
       <div *ngFor='let key of keyset' class="key">{{key}}</div>
     </div>
 
@@ -15,3 +15,8 @@
     </div>
   </div>
 </div>
+
+
+<ng-template #zero>
+  <span>0</span>
+</ng-template>

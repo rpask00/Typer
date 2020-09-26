@@ -20,9 +20,7 @@ export class NavComponent implements OnInit {
     this.user$ = authSV.user$
   }
 
-  ngOnInit(): void {
-    this.user$.subscribe(console.log)
-  }
+  ngOnInit(): void { }
 
   switchmode(e: any) {
     this.typingSv.switchmode(e.target.checked)

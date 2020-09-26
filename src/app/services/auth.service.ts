@@ -4,7 +4,7 @@ import { Stats, User } from '../models/user-model';
 import { Observable, of } from 'rxjs';
 import { auth } from 'firebase';
 import { AngularFireDatabase } from '@angular/fire/database';
-import { map, switchMap, take, tap } from 'rxjs/operators';
+import { switchMap, take, tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -27,14 +27,14 @@ export class AuthService {
     let provider = new auth.GoogleAuthProvider()
     let credentials = await this.afAuth.signInWithPopup(provider)
 
-    this.setUser(credentials)
+    this.createUser(credentials)
   }
 
   logOut() {
     this.afAuth.signOut().then(() => console.log('logged out'))
   }
 
-  setUser(credentials: auth.UserCredential) {
+  createUser(credentials: auth.UserCredential) {
     this.adDatabase.object('users/' + credentials.user.uid).set({
       name: credentials.user.displayName,
       photoUrl: credentials.user.photoURL,
@@ -47,11 +47,27 @@ export class AuthService {
         samples: 0,
       },
       stuckMode: true,
+      fetch_Data: {
+        keyset: {
+          E: 1,
+          N: 1,
+          I: 1,
+          T: 1,
+          R: 1,
+          L: 1,
+          S: 1,
+        },
+        currentkey: 'E',
+        words_count: 15,
+      }
     })
   }
 
   updateStats(stats: Stats): void {
-    this.afAuth.user.pipe(take(1), tap(user => this.adDatabase.object('users/' + user.uid + '/stats').set(stats)))
+    console.log('udawd')
+    this.afAuth.user.pipe(take(1)).subscribe(user => {
+      if (user) this.adDatabase.object('users/' + user.uid + '/stats').set(stats)
+    })
   }
 
 }

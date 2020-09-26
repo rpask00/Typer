@@ -14,7 +14,6 @@
 }
 
 
-
 .keyset {
     font-family: 'Kanit', sans-serif;
     font-size: 30px;
@@ -22,12 +21,38 @@
     align-items: center;
 
     .key {
-        font-size: 20px;
-        background-color: green;
+        font-size: 18px;
         width: 25px;
         height: 25px;
         margin: 3px;
         text-align: center;
+        background-color: green;
+        border-radius: 3px;
+    }
+
+    .bad {
+        // background-color: red;
+        opacity: .3;
+    }
+
+    .low {
+        // background-color: orange;
+        opacity: .5;
+    }
+
+    .medium {
+        // background-color: yellow;
+        opacity: .7;
+    }
+
+    .good {
+        background-color: green;
+        opacity: 1;
+    }
+
+    .notactive {
+        background-color: rgb(116, 116, 116);
+        opacity: .6;
     }
 
     label {

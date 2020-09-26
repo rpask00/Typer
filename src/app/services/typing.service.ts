@@ -1,49 +1,48 @@
-import { Injectable, OnInit } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFireDatabase } from '@angular/fire/database';
-import { BehaviorSubject, of } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { Fetch_Data, Stats } from '../models/user-model';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class TypingService implements OnInit {
+export class TypingService {
 
   private stuckmode: boolean = true;
-  private speed = new BehaviorSubject<number>(0)
-  private mistakes = new BehaviorSubject<number>(0)
+  private stats = new BehaviorSubject<Stats>({
+    averageSpeed: 0,
+    lastSpeed: 0,
+    averageErrors: 0,
+    lastErrors: 0,
+    samples: 0,
+  })
 
   private fetch_data: Fetch_Data = {
-    keyset: 'ENITRLS',
+    keyset: {
+      E: 1,
+      N: 1,
+      I: 1,
+      T: 1,
+      R: 1,
+      L: 1,
+      S: 1,
+    },
     currentkey: 'E',
     words_count: 12,
   }
 
   constructor(
     private afDB: AngularFireDatabase,
-    private afAuth: AngularFireAuth
+    private afAuth: AngularFireAuth,
+    private authSV: AuthService,
   ) {
-
-  }
-
-  ngOnInit(): void {
     this.afAuth.user.pipe(take(1)).subscribe(user => {
-      if (user) {
-        this.afDB.object('users/' + user.uid + '/stats').valueChanges().pipe(take(1)).subscribe((stats: Stats) => {
-          console.log(stats)
-          this.mistakes.next(stats.lastErrors)
-          this.speed.next(stats.lastSpeed)
-        })
-      } else {
-        this.mistakes.next(0)
-        this.speed.next(0)
-      }
-
+      this.afDB.object('users/' + user.uid + '/stats').valueChanges().pipe(take(1)).subscribe((stats: Stats) => this.stats.next(stats))
     })
   }
-
-  
 
   switchmode(mode: boolean) {
     this.stuckmode = mode
@@ -53,13 +52,8 @@ export class TypingService implements OnInit {
     return this.stuckmode
   }
 
-  getspeed$() {
-    return this.speed.asObservable()
-  }
-
-  getmistakes$() {
-
-    return this.mistakes.asObservable()
+  getstats$(): Observable<Stats> {
+    return this.stats.asObservable()
   }
 
   get_fetch_data$() {
@@ -75,8 +69,19 @@ export class TypingService implements OnInit {
   }
 
   update_stats(speed: number, mistakes: number) {
-    this.speed.next(speed)
-    this.mistakes.next(mistakes)
+    this.stats.pipe(take(1)).subscribe(stats => {
+      let avgSpeed = (stats.samples * stats.averageSpeed + speed) / ++stats.samples
+      let avgErrors = (stats.samples * stats.averageErrors + mistakes) / stats.samples
+
+      stats.averageSpeed = avgSpeed
+      stats.averageErrors = avgErrors
+
+      stats.lastSpeed = speed
+      stats.lastErrors = mistakes
+
+      this.authSV.updateStats(stats)
+      this.stats.next(stats)
+    })
   }
 
 }

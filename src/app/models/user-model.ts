@@ -15,7 +15,8 @@ export interface Stats {
 }
 
 export interface Fetch_Data {
-    keyset: string,
+    keyset: any,
     currentkey: string,
     words_count: number,
 }
+

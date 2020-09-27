@@ -23,7 +23,7 @@ export class NavComponent implements OnInit {
   ngOnInit(): void { }
 
   switchmode(e: any) {
-    this.typingSv.switchmode(e.target.checked)
+    this.typingSv.switch_mode(e.target.checked)
   }
 
   logIn() {

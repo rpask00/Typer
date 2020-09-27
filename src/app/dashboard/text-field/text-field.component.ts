@@ -33,7 +33,7 @@ export class TextFieldComponent implements OnInit {
 
   @HostListener('window:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
-    let iSstuckMode: boolean = this.typingSv.getmode()
+    let iSstuckMode: boolean = this.typingSv.get_mode()
     let key: string = event.key;
 
     if (key == ' ')
@@ -71,7 +71,8 @@ export class TextFieldComponent implements OnInit {
 
   async initSample() {
     let fetch_data = await this.typingSv.get_fetch_data$().toPromise()
-    let sample_words: string[] = await this.wordsSupSv.getWords(fetch_data.words_count, fetch_data.currentkey, fetch_data.keyset)
+    let keyset = Object.keys(fetch_data.keyset).join('')
+    let sample_words: string[] = await this.wordsSupSv.getWords(fetch_data.words_count, fetch_data.currentkey, keyset)
 
     this.words_count = sample_words.length
     this.sample = sample_words.map(word => word.toLowerCase()).join('_').split('')

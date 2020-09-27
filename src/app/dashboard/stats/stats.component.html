@@ -6,13 +6,12 @@
   <div class="keys">
     <div *ngIf='keyset$ | async as keyset' class="keyset">
       <label>Keyset:</label>
-      <div *ngFor='let key of keyset' class="key">{{key}}</div>
-      <div *ngFor='let key of allkeys_set' class="key  notactive">{{key}}</div>
+      <div *ngFor='let key of keyset' class="key" [ngClass]="classes[key[1]]">{{key[0]}}</div>
     </div>
 
     <div class="keyset">
       <div class="current label">Current key:</div>
-      <div class="key">A</div>
+      <div *ngIf='currentkey$ | async as currentkey' class="key">{{currentkey}}</div>
     </div>
   </div>
 </div>

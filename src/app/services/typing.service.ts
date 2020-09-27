@@ -2,9 +2,10 @@ import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFireDatabase } from '@angular/fire/database';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
 import { Fetch_Data, Stats } from '../models/user-model';
 import { AuthService } from './auth.service';
+import { WordsSupplyService } from './words-supply.service';
 
 @Injectable({
   providedIn: 'root'
@@ -20,55 +21,60 @@ export class TypingService {
     samples: 0,
   })
 
-  private fetch_data: Fetch_Data = {
-    keyset: {
-      E: 1,
-      N: 1,
-      I: 1,
-      T: 1,
-      R: 1,
-      L: 1,
-      S: 1,
-    },
+
+  private fetch_data: BehaviorSubject<Fetch_Data> = new BehaviorSubject<Fetch_Data>({
+    keyset: this.wordssupSv.default_keyset,
     currentkey: 'E',
     words_count: 12,
-  }
+  })
 
   constructor(
     private afDB: AngularFireDatabase,
     private afAuth: AngularFireAuth,
     private authSV: AuthService,
+    private wordssupSv: WordsSupplyService
   ) {
     this.afAuth.user.pipe(take(1)).subscribe(user => {
-      this.afDB.object('users/' + user.uid + '/stats').valueChanges().pipe(take(1)).subscribe((stats: Stats) => this.stats.next(stats))
+      if (user) {
+        this.afDB.object('users/' + user.uid + '/stats')
+          .valueChanges()
+          .pipe(take(1))
+          .subscribe((stats: Stats) => this.stats.next(stats))
+
+        this.afDB.object('users/' + user.uid + '/fetch_data')
+          .valueChanges()
+          .pipe(take(1))
+          .subscribe((fetch_data: Fetch_Data) => this.fetch_data.next(fetch_data))
+      }
     })
   }
 
-  switchmode(mode: boolean) {
+  switch_mode(mode: boolean): void {
     this.stuckmode = mode
   }
 
-  getmode() {
+  get_mode(): boolean {
     return this.stuckmode
   }
 
-  getstats$(): Observable<Stats> {
+  get_stats$(): Observable<Stats> {
     return this.stats.asObservable()
   }
 
-  get_fetch_data$() {
-    return of(this.fetch_data)
+  get_fetch_data$(): Observable<Fetch_Data> {
+    this.fetch_data.asObservable().subscribe(console.log)
+    return this.fetch_data.asObservable()
   }
 
-  gte_keyset$() {
-    return of(this.fetch_data.keyset)
+  gte_keyset$(): Observable<any> {
+    return this.fetch_data.asObservable().pipe(map(fetch_data => fetch_data.keyset))
   }
 
-  get_currentkey$() {
-    return of(this.fetch_data.currentkey)
+  get_current_key$(): Observable<string> {
+    return this.fetch_data.asObservable().pipe(map(fetch_data => fetch_data.currentkey))
   }
 
-  update_stats(speed: number, mistakes: number) {
+  update_stats(speed: number, mistakes: number): void {
     this.stats.pipe(take(1)).subscribe(stats => {
       let avgSpeed = (stats.samples * stats.averageSpeed + speed) / ++stats.samples
       let avgErrors = (stats.samples * stats.averageErrors + mistakes) / stats.samples
@@ -79,7 +85,7 @@ export class TypingService {
       stats.lastSpeed = speed
       stats.lastErrors = mistakes
 
-      this.authSV.updateStats(stats)
+      this.authSV.updateStatsInDB(stats)
       this.stats.next(stats)
     })
   }

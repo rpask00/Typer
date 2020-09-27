@@ -5,6 +5,7 @@ import { Observable, of } from 'rxjs';
 import { auth } from 'firebase';
 import { AngularFireDatabase } from '@angular/fire/database';
 import { switchMap, take, tap } from 'rxjs/operators';
+import { WordsSupplyService } from './words-supply.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,6 +17,7 @@ export class AuthService {
   constructor(
     private afAuth: AngularFireAuth,
     private adDatabase: AngularFireDatabase,
+    private wordssupSv: WordsSupplyService
   ) {
     this.user$ = this.afAuth.user.pipe(switchMap(user => {
       if (user) return this.adDatabase.object('users/' + user.uid).valueChanges() as Observable<User>
@@ -30,11 +32,11 @@ export class AuthService {
     this.createUser(credentials)
   }
 
-  logOut() {
+  logOut(): void {
     this.afAuth.signOut().then(() => console.log('logged out'))
   }
 
-  createUser(credentials: auth.UserCredential) {
+  createUser(credentials: auth.UserCredential): void {
     this.adDatabase.object('users/' + credentials.user.uid).set({
       name: credentials.user.displayName,
       photoUrl: credentials.user.photoURL,
@@ -47,24 +49,15 @@ export class AuthService {
         samples: 0,
       },
       stuckMode: true,
-      fetch_Data: {
-        keyset: {
-          E: 1,
-          N: 1,
-          I: 1,
-          T: 1,
-          R: 1,
-          L: 1,
-          S: 1,
-        },
+      fetch_data: {
+        keyset: this.wordssupSv.default_keyset,
         currentkey: 'E',
         words_count: 15,
       }
     })
   }
 
-  updateStats(stats: Stats): void {
-    console.log('udawd')
+  updateStatsInDB(stats: Stats): void {
     this.afAuth.user.pipe(take(1)).subscribe(user => {
       if (user) this.adDatabase.object('users/' + user.uid + '/stats').set(stats)
     })

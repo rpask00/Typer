@@ -13,22 +13,19 @@ export class StatsComponent implements OnInit {
 
 
   stats$: Observable<Stats>
-  keyset$: Observable<string[]>
-  allkeys_set: string[] = 'ENITRLSAUODYCHGMPBKVWFZXQJ'.split('')
+  keyset$: Observable<any>
   currentkey$: Observable<string>
+
+  classes: string[] = ['notactive', 'bad', 'low', 'medium', 'good']
 
   constructor(
     private typingSV: TypingService
   ) { }
 
   ngOnInit(): void {
-    this.stats$ = this.typingSV.getstats$()
-    this.keyset$ = this.typingSV.gte_keyset$()
-    // .pipe(map(keyset => {
-    //   keyset.split('').forEach(key => this.allkeys_set.shift())
-    //   return keyset.split('')
-    // }))
-    this.currentkey$ = this.typingSV.get_currentkey$()
+    this.stats$ = this.typingSV.get_stats$()
+    this.keyset$ = this.typingSV.gte_keyset$().pipe(map(keyset => Object.keys(keyset).map(key => [key, keyset[key]])))
+    this.currentkey$ = this.typingSV.get_current_key$()
   }
 
 }

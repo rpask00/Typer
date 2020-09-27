@@ -22,10 +22,10 @@ export class StatsComponent implements OnInit {
     private typingSV: TypingService
   ) { }
 
-  ngOnInit(): void {
-    this.stats$ = this.typingSV.get_stats$()
-    this.keyset$ = this.typingSV.gte_keyset$().pipe(map(keyset => Object.keys(keyset).map(key => [key, keyset[key][0]])))
-    this.currentkey$ = this.typingSV.get_current_key$()
+  async ngOnInit(): Promise<void> {
+    this.stats$ = await this.typingSV.get_stats$()
+    this.keyset$ = (await this.typingSV.gte_keyset$()).pipe(map(keyset => Object.keys(keyset).map(key => [key, keyset[key][0]])))
+    this.currentkey$ = await this.typingSV.get_current_key$()
   }
 
 }

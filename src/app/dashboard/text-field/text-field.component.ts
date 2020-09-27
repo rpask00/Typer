@@ -75,7 +75,7 @@ export class TextFieldComponent implements OnInit {
   }
 
   update_keyset(corect_key: string, pressed_key: string): void {
-    if (pressed_key == ' ')
+    if (!corect_key || pressed_key == ' ')
       return
 
     pressed_key = pressed_key.toUpperCase()
@@ -89,12 +89,11 @@ export class TextFieldComponent implements OnInit {
     if (corect_key != pressed_key)
       this.current_keyset[pressed_key][2] = ++errors
 
-    // this.current_keyset[pressed_key][0] = Math.min(Math.floor(total / errors / 3) + 1, 5)
-    this.current_keyset[pressed_key][0] = Math.min(Math.floor(total / errors / 1) + 1, 5)
+    this.current_keyset[pressed_key][0] = Math.min(Math.floor(total / errors / 3) + 1, 5)
   }
 
   async initSample() {
-    this.typingSv.get_fetch_data$().pipe(take(1)).subscribe(async (f_d) => {
+    (await this.typingSv.get_fetch_data$()).subscribe(async (f_d) => {
       this.current_keyset = f_d.keyset
       let keyset = Object.keys(f_d.keyset).filter(key => f_d.keyset[key][0]).join('')
       let sample_words: string[] = await this.wordsSupSv.getWords(f_d.words_count, f_d.currentkey, keyset)
@@ -146,7 +145,7 @@ export class TextFieldComponent implements OnInit {
     this.typingSv.update_stats(speed, this.mistakes_count)
     this.typingSv.update_fetch_data(this.current_keyset)
 
-    this.initSample()
+    // this.initSample()
   }
 
 

@@ -13,51 +13,64 @@ import { WordsSupplyService } from './words-supply.service';
 export class TypingService {
 
   private stuckmode: boolean = true;
-  private stats = new BehaviorSubject<Stats>({
-    averageSpeed: 0,
-    lastSpeed: 0,
-    averageErrors: 0,
-    lastErrors: 0,
-    samples: 0,
-  })
-
-
-  private fetch_data: BehaviorSubject<Fetch_Data> = new BehaviorSubject<Fetch_Data>({
-    keyset: this.wordssupSv.default_keyset,
-    currentkey: 'E',
-    words_count: 12,
-  })
-
+  private stats: BehaviorSubject<Stats>
+  private fetch_data: BehaviorSubject<Fetch_Data>
   constructor(
     private afDB: AngularFireDatabase,
     private afAuth: AngularFireAuth,
     private authSV: AuthService,
     private wordssupSv: WordsSupplyService
-  ) {
-    this.afAuth.user.pipe(take(1)).subscribe(user => {
-      if (user) {
-        this.afDB.object('users/' + user.uid + '/stats')
-          .valueChanges()
-          .pipe(take(1))
-          .subscribe((stats: Stats) => this.stats.next(stats))
-
-        this.afDB.object('users/' + user.uid + '/fetch_data')
-          .valueChanges()
-          .pipe(take(1))
-          .subscribe((fetch_data: Fetch_Data) => this.fetch_data.next(fetch_data))
-      }
-    })
-  }
+  ) { }
 
   switch_mode(mode: boolean): void {
     this.stuckmode = mode
   }
 
   get_mode = (): boolean => this.stuckmode
-  get_fetch_data$ = (): Observable<Fetch_Data> => this.fetch_data.asObservable()
-  gte_keyset$ = (): Observable<any> => this.fetch_data.asObservable().pipe(map(fetch_data => fetch_data.keyset))
-  get_stats$ = (): Observable<Stats> => this.stats.asObservable()
-  get_current_key$ = (): Observable<string> => this.fetch_data.asObservable().pipe(map(fetch_data => fetch_data.currentkey))
+
+  async get_fetch_data$(): Promise<Observable<Fetch_Data>> {
+    if (this.fetch_data)
+      return this.fetch_data.asObservable()
+
+    let user = await this.afAuth.user.pipe(take(1)).toPromise()
+    let f_d: any
+    if (user)
+      f_d = await this.afDB.object('users/' + user.uid + '/fetch_data')
+        .valueChanges()
+        .pipe(take(1))
+        .toPromise()
+    else
+      f_d = this.wordssupSv.default_fd
+
+    this.fetch_data = new BehaviorSubject(f_d)
+    return this.fetch_data.asObservable()
+  }
+
+  async get_stats$(): Promise<Observable<Stats>> {
+    if (this.stats)
+      return this.stats.asObservable()
+
+    let user = await this.afAuth.user.pipe(take(1)).toPromise()
+    let stats: any
+    if (user)
+      stats = await this.afDB.object('users/' + user.uid + '/stats')
+        .valueChanges()
+        .pipe(take(1))
+        .toPromise()
+    else
+      stats = this.wordssupSv.default_fd
+
+    this.stats = new BehaviorSubject(stats)
+    return this.stats.asObservable()
+  }
+
+  async gte_keyset$(): Promise<Observable<any>> {
+    return (await this.get_fetch_data$()).pipe(map(fetch_data => fetch_data.keyset))
+  }
+
+  async get_current_key$(): Promise<Observable<string>> {
+    return (await this.get_fetch_data$()).pipe(map(fetch_data => fetch_data.currentkey))
+  }
 
   update_stats(speed: number, mistakes: number): void {
     this.stats.pipe(take(1)).subscribe(stats => {
@@ -82,7 +95,7 @@ export class TypingService {
         f_d.currentkey = this.wordssupSv.get_next_key(f_d.currentkey)
         keyset[f_d.currentkey][0] = 1
       }
-      
+
       f_d.keyset = keyset
 
       this.authSV.updateFetchDataInDB(f_d)

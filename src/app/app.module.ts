@@ -12,6 +12,7 @@ import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFireDatabaseModule } from '@angular/fire/database';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AllMaterialModule } from './all-material.module';
+import { MultiplayerComponent } from './multiplayer/multiplayer.component';
 
 @NgModule({
   declarations: [
@@ -20,6 +21,7 @@ import { AllMaterialModule } from './all-material.module';
     DashboardComponent,
     StatsComponent,
     NavComponent,
+    MultiplayerComponent,
   ],
   imports: [
     BrowserModule,

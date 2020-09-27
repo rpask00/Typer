@@ -1,8 +1,21 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { AppComponent } from './app.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
+import { MultiplayerComponent } from './multiplayer/multiplayer.component';
 
 
-const routes: Routes = [];
+const routes: Routes = [
+  {
+    path: '',
+    component: DashboardComponent
+  },
+  {
+    path: 'multi',
+    component: MultiplayerComponent,
+    pathMatch: "full"
+  }
+];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

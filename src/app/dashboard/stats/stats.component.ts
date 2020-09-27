@@ -24,7 +24,7 @@ export class StatsComponent implements OnInit {
 
   ngOnInit(): void {
     this.stats$ = this.typingSV.get_stats$()
-    this.keyset$ = this.typingSV.gte_keyset$().pipe(map(keyset => Object.keys(keyset).map(key => [key, keyset[key]])))
+    this.keyset$ = this.typingSV.gte_keyset$().pipe(map(keyset => Object.keys(keyset).map(key => [key, keyset[key][0]])))
     this.currentkey$ = this.typingSV.get_current_key$()
   }
 

@@ -1,4 +1,5 @@
 import { Component, OnInit, HostListener } from '@angular/core';
+import { take } from 'rxjs/operators';
 import { TypingService } from 'src/app/services/typing.service';
 import { WordsSupplyService } from 'src/app/services/words-supply.service';
 
@@ -21,6 +22,7 @@ export class TextFieldComponent implements OnInit {
   samplelength: number = 0;
   timeInterval: NodeJS.Timeout
   rows: any[][]
+  current_keyset: any = {}
 
   constructor(
     private typingSv: TypingService,
@@ -35,6 +37,9 @@ export class TextFieldComponent implements OnInit {
   handleKeyboardEvent(event: KeyboardEvent) {
     let iSstuckMode: boolean = this.typingSv.get_mode()
     let key: string = event.key;
+    let corect_key: string = this.sample[this.active]
+
+    this.update_keyset(corect_key, key)
 
     if (key == ' ')
       key = '_'
@@ -44,11 +49,11 @@ export class TextFieldComponent implements OnInit {
 
 
     if (this.firsttry) {
-      this.corrects[this.active] = key == this.sample[this.active]
-      this.wrongs[this.active] = key != this.sample[this.active]
+      this.corrects[this.active] = key == corect_key
+      this.wrongs[this.active] = key != corect_key
     }
 
-    if (key == this.sample[this.active]) {
+    if (key == corect_key) {
       this.active++
       this.firsttry = true
 
@@ -69,14 +74,35 @@ export class TextFieldComponent implements OnInit {
 
   }
 
-  async initSample() {
-    this.typingSv.get_fetch_data$().subscribe(async (f_d) => {
-      let keyset = Object.keys(f_d.keyset).join('')
-      let sample_words: string[] = await this.wordsSupSv.getWords(f_d.words_count, f_d.currentkey, keyset)
+  update_keyset(corect_key: string, pressed_key: string): void {
+    if (pressed_key == ' ')
+      return
 
+    pressed_key = pressed_key.toUpperCase()
+    corect_key = corect_key.toUpperCase()
+
+    let total: number = this.current_keyset[pressed_key][1]
+    let errors: number = this.current_keyset[pressed_key][2]
+
+    this.current_keyset[pressed_key][1] = ++total
+
+    if (corect_key != pressed_key)
+      this.current_keyset[pressed_key][2] = ++errors
+
+    // this.current_keyset[pressed_key][0] = Math.min(Math.floor(total / errors / 3) + 1, 5)
+    this.current_keyset[pressed_key][0] = Math.min(Math.floor(total / errors / 1) + 1, 5)
+  }
+
+  async initSample() {
+    this.typingSv.get_fetch_data$().pipe(take(1)).subscribe(async (f_d) => {
+      this.current_keyset = f_d.keyset
+      let keyset = Object.keys(f_d.keyset).filter(key => f_d.keyset[key][0]).join('')
+      let sample_words: string[] = await this.wordsSupSv.getWords(f_d.words_count, f_d.currentkey, keyset)
       this.words_count = sample_words.length
       this.sample = sample_words.map(word => word.toLowerCase()).join('_').split('')
+
       this.rows = this.split_into_equal_rows(sample_words)
+
       this.samplelength = this.sample.length
       this.corrects = this.sample.map(e => false)
       this.wrongs = this.sample.map(e => false)
@@ -86,6 +112,8 @@ export class TextFieldComponent implements OnInit {
     })
 
   }
+
+
 
   split_into_equal_rows(sample_words: string[]) {
     let rows: string[][] = []
@@ -116,6 +144,7 @@ export class TextFieldComponent implements OnInit {
     let speed: number = this.samplelength / this.time * 60 / 4.5
     speed = Math.round(speed)
     this.typingSv.update_stats(speed, this.mistakes_count)
+    this.typingSv.update_fetch_data(this.current_keyset)
 
     this.initSample()
   }

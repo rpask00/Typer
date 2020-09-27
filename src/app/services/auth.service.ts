@@ -63,4 +63,14 @@ export class AuthService {
     })
   }
 
+  updateFetchDataInDB(f_d: any): void {
+    this.afAuth.user.pipe(take(1)).subscribe(user => {
+      if (user) this.adDatabase.object('users/' + user.uid + '/fetch_data').set(f_d)
+    })
+  }
+
+
+
+
+
 }

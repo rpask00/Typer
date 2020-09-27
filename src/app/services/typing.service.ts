@@ -75,5 +75,20 @@ export class TypingService {
     })
   }
 
+
+  update_fetch_data(keyset): void {
+    this.fetch_data.pipe(take(1)).subscribe(f_d => {
+      if (f_d.currentkey && keyset[f_d.currentkey][0] == 5) {
+        f_d.currentkey = this.wordssupSv.get_next_key(f_d.currentkey)
+        keyset[f_d.currentkey][0] = 1
+      }
+      
+      f_d.keyset = keyset
+
+      this.authSV.updateFetchDataInDB(f_d)
+      this.fetch_data.next(f_d)
+    })
+  }
+
 }
 

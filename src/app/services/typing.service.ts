@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFireDatabase } from '@angular/fire/database';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import { Fetch_Data, Stats } from '../models/user-model';
 import { AuthService } from './auth.service';
@@ -53,26 +53,11 @@ export class TypingService {
     this.stuckmode = mode
   }
 
-  get_mode(): boolean {
-    return this.stuckmode
-  }
-
-  get_stats$(): Observable<Stats> {
-    return this.stats.asObservable()
-  }
-
-  get_fetch_data$(): Observable<Fetch_Data> {
-    this.fetch_data.asObservable().subscribe(console.log)
-    return this.fetch_data.asObservable()
-  }
-
-  gte_keyset$(): Observable<any> {
-    return this.fetch_data.asObservable().pipe(map(fetch_data => fetch_data.keyset))
-  }
-
-  get_current_key$(): Observable<string> {
-    return this.fetch_data.asObservable().pipe(map(fetch_data => fetch_data.currentkey))
-  }
+  get_mode = (): boolean => this.stuckmode
+  get_fetch_data$ = (): Observable<Fetch_Data> => this.fetch_data.asObservable()
+  gte_keyset$ = (): Observable<any> => this.fetch_data.asObservable().pipe(map(fetch_data => fetch_data.keyset))
+  get_stats$ = (): Observable<Stats> => this.stats.asObservable()
+  get_current_key$ = (): Observable<string> => this.fetch_data.asObservable().pipe(map(fetch_data => fetch_data.currentkey))
 
   update_stats(speed: number, mistakes: number): void {
     this.stats.pipe(take(1)).subscribe(stats => {

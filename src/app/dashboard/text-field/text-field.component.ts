@@ -70,21 +70,21 @@ export class TextFieldComponent implements OnInit {
   }
 
   async initSample() {
-    let fetch_data = await this.typingSv.get_fetch_data$().toPromise()
-    let keyset = Object.keys(fetch_data.keyset).join('')
-    let sample_words: string[] = await this.wordsSupSv.getWords(fetch_data.words_count, fetch_data.currentkey, keyset)
+    this.typingSv.get_fetch_data$().subscribe(async (f_d) => {
+      let keyset = Object.keys(f_d.keyset).join('')
+      let sample_words: string[] = await this.wordsSupSv.getWords(f_d.words_count, f_d.currentkey, keyset)
 
-    this.words_count = sample_words.length
-    this.sample = sample_words.map(word => word.toLowerCase()).join('_').split('')
+      this.words_count = sample_words.length
+      this.sample = sample_words.map(word => word.toLowerCase()).join('_').split('')
+      this.rows = this.split_into_equal_rows(sample_words)
+      this.samplelength = this.sample.length
+      this.corrects = this.sample.map(e => false)
+      this.wrongs = this.sample.map(e => false)
+      this.active = 0
+      this.mistakes_count = 0
+      this.time = 0
+    })
 
-    this.rows = this.split_into_equal_rows(sample_words)
-
-    this.samplelength = this.sample.length
-    this.corrects = this.sample.map(e => false)
-    this.wrongs = this.sample.map(e => false)
-    this.active = 0
-    this.mistakes_count = 0
-    this.time = 0
   }
 
   split_into_equal_rows(sample_words: string[]) {

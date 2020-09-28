@@ -1,0 +1,10 @@
+<div class="user" *ngIf='user | async as u; else login'>
+  <img [src]="u.photoUrl" alt="">
+  <p>{{u.name}} <br>
+    <a class="logout" (click)=logOut()>Log out</a>
+  </p>
+</div>
+
+<ng-template #login>
+  <button mat-raised-button color="primary" (click)=logIn()>Log in with Google</button>
+</ng-template>

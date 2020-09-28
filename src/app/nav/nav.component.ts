@@ -12,7 +12,6 @@ export class NavComponent implements OnInit {
 
   user$: Observable<User> | Observable<null>
 
-
   constructor(
     private typingSv: TypingService,
     private authSV: AuthService,
@@ -26,12 +25,6 @@ export class NavComponent implements OnInit {
     this.typingSv.switch_mode(e.target.checked)
   }
 
-  logIn() {
-    this.authSV.logIn()
-  }
 
-  logOut() {
-    this.authSV.logOut()
-  }
 
 }

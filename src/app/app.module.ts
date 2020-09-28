@@ -15,6 +15,7 @@ import { AllMaterialModule } from './all-material.module';
 import { MultiplayerComponent } from './multiplayer/multiplayer.component';
 import { PlayerslistComponent } from './multiplayer/playerslist/playerslist.component';
 import { PlaygroundComponent } from './multiplayer/playground/playground.component';
+import { UserThumbnailComponent } from './nav/user-thumbnail/user-thumbnail.component';
 
 @NgModule({
   declarations: [
@@ -26,6 +27,7 @@ import { PlaygroundComponent } from './multiplayer/playground/playground.compone
     MultiplayerComponent,
     PlayerslistComponent,
     PlaygroundComponent,
+    UserThumbnailComponent,
   ],
   imports: [
     BrowserModule,

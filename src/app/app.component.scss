@@ -1,35 +1,32 @@
 .box {
     display: flex;
-    margin-left: auto;
-    margin-right: auto;
     width: 100vw;
     height: 100vh;
 }
 
 .freespace {
-    flex-basis: 15%;
+    width: 15%;
 }
 
-dashboard,
-multiplayer {
-    flex-basis: 70%;
+.content {
+    width: 70%;
 }
 
 nav {
-    flex-basis: 15%;
+    width: 15%;
 }
 
 
 @media only screen and (max-width:1500px) {
     .freespace {
-        flex-basis: 5%;
+        width: 5%;
     }
 
-    dashboard {
-        flex-basis: 75%;
+    .content {
+        width: 75%;
     }
 
     nav {
-        flex-basis: 20%;
+        width: 20%;
     }
 }

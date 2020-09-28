@@ -1,18 +1,6 @@
 <div class='nav'>
 
-
-  <div class="user" *ngIf='user$ | async as user; else login'>
-    <img [src]="user.photoUrl" alt="">
-    <p>{{user.name}} <br>
-      <a class="logout" (click)=logOut()>Log out</a>
-    </p>
-
-  </div>
-
-  <ng-template #login>
-    <button mat-raised-button color="primary" (click)=logIn()>Log in with Google</button>
-  </ng-template>
-
+  <user-thumbnail [user]='user$'></user-thumbnail>
 
   <a class='navel' routerLink=''><i class="demo-icon icon-gamepad"></i> Practice</a>
   <a class='navel' routerLink='stats'><i class="demo-icon icon-wrench-circled"></i>Settings</a>

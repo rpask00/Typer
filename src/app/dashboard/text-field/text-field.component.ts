@@ -1,7 +1,7 @@
 import { Component, OnInit, HostListener } from '@angular/core';
-import { take } from 'rxjs/operators';
 import { TypingService } from 'src/app/services/typing.service';
 import { WordsSupplyService } from 'src/app/services/words-supply.service';
+import { first } from 'rxjs/operators';
 
 @Component({
   selector: 'text-field',
@@ -93,22 +93,20 @@ export class TextFieldComponent implements OnInit {
   }
 
   async initSample() {
-    (await this.typingSv.get_fetch_data$()).subscribe(async (f_d) => {
-      this.current_keyset = f_d.keyset
-      let keyset = Object.keys(f_d.keyset).filter(key => f_d.keyset[key][0]).join('')
-      let sample_words: string[] = await this.wordsSupSv.getWords(f_d.words_count, f_d.currentkey, keyset)
-      this.words_count = sample_words.length
-      this.sample = sample_words.map(word => word.toLowerCase()).join('_').split('')
+    this.current_keyset = await (await this.typingSv.get_keyset$()).pipe(first()).toPromise()
 
-      this.rows = this.split_into_equal_rows(sample_words)
+    let sample_words: string[] = await this.typingSv.get_sample_words()
+    this.words_count = sample_words.length
+    this.sample = sample_words.map(word => word.toLowerCase()).join('_').split('')
 
-      this.samplelength = this.sample.length
-      this.corrects = this.sample.map(e => false)
-      this.wrongs = this.sample.map(e => false)
-      this.active = 0
-      this.mistakes_count = 0
-      this.time = 0
-    })
+    this.rows = this.split_into_equal_rows(sample_words)
+
+    this.samplelength = this.sample.length
+    this.corrects = this.sample.map(e => false)
+    this.wrongs = this.sample.map(e => false)
+    this.active = 0
+    this.mistakes_count = 0
+    this.time = 0
 
   }
 
@@ -122,7 +120,7 @@ export class TextFieldComponent implements OnInit {
 
     for (let word of sample_words) {
       curentlent += word.length + 1
-      index = Math.floor(curentlent / 45)
+      index = Math.floor(curentlent / 25)
 
       if (index == rows_count) {
         rows.push([])
@@ -145,7 +143,7 @@ export class TextFieldComponent implements OnInit {
     this.typingSv.update_stats(speed, this.mistakes_count)
     this.typingSv.update_fetch_data(this.current_keyset)
 
-    // this.initSample()
+    this.initSample()
   }
 
 

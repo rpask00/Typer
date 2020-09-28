@@ -52,7 +52,7 @@ export class WordsSupplyService {
 
   order: string[] = 'ENITRLSAUODYCHGMPBKVWFZXQJ '.split('')
 
-  async getWords(count, letter, keyset) {
+  async getWords(count, letter, keyset): Promise<string[]> {
     let res = await fetch("http://127.0.0.1:3000/words/" + count + '/' + letter + '/' + keyset)
     let json = await res.json()
 

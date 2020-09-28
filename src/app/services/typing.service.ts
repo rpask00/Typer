@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
 import { AngularFireDatabase } from '@angular/fire/database';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { map, take } from 'rxjs/operators';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { map, take, first } from 'rxjs/operators';
 import { Fetch_Data, Stats } from '../models/user-model';
 import { AuthService } from './auth.service';
 import { WordsSupplyService } from './words-supply.service';
@@ -64,12 +64,22 @@ export class TypingService {
     return this.stats.asObservable()
   }
 
-  async gte_keyset$(): Promise<Observable<any>> {
+  async get_keyset$(): Promise<Observable<any>> {
     return (await this.get_fetch_data$()).pipe(map(fetch_data => fetch_data.keyset))
   }
 
   async get_current_key$(): Promise<Observable<string>> {
     return (await this.get_fetch_data$()).pipe(map(fetch_data => fetch_data.currentkey))
+  }
+
+  async get_sample_words(words_count?, currentkey?, keyset?): Promise<string[]> {
+    if (words_count && currentkey && keyset)
+      return await this.wordssupSv.getWords(words_count, currentkey, keyset)
+
+    let f_d = await (await this.get_fetch_data$()).pipe(first()).toPromise()
+    let filtered_keyset = Object.keys(f_d.keyset).filter(key => f_d.keyset[key][0]).join('')
+    return await this.wordssupSv.getWords(f_d.words_count, f_d.currentkey, filtered_keyset)
+
   }
 
   update_stats(speed: number, mistakes: number): void {

@@ -11,13 +11,14 @@ import { Observable } from 'rxjs';
 export class UserThumbnailComponent implements OnInit {
 
   @Input('user') user: Observable<User> | Observable<null>
+  @Input('btn') btn: 'logout' | 'invite' = 'logout'
 
   constructor(
     private authSV: AuthService,
   ) { }
 
   ngOnInit(): void {
-    console.log(this.user)
+    console.log(this.btn)
   }
 
   logIn() {
@@ -26,6 +27,10 @@ export class UserThumbnailComponent implements OnInit {
 
   logOut() {
     this.authSV.logOut()
+  }
+
+  invite() {
+
   }
 
 }

@@ -11,7 +11,7 @@ import { AuthService } from 'src/app/services/auth.service';
 export class PlayerslistComponent implements OnInit {
 
   user$: Observable<User> | Observable<null>
-
+  range = [1, 2, 3, 4]
   constructor(
     private authSV: AuthService,
   ) {

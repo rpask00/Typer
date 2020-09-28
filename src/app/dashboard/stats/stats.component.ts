@@ -24,7 +24,7 @@ export class StatsComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     this.stats$ = await this.typingSV.get_stats$()
-    this.keyset$ = (await this.typingSV.gte_keyset$()).pipe(map(keyset => Object.keys(keyset).map(key => [key, keyset[key][0]])))
+    this.keyset$ = (await this.typingSV.get_keyset$()).pipe(map(keyset => Object.keys(keyset).map(key => [key, keyset[key][0]])))
     this.currentkey$ = await this.typingSV.get_current_key$()
   }
 

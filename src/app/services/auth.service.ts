@@ -41,19 +41,9 @@ export class AuthService {
       name: credentials.user.displayName,
       photoUrl: credentials.user.photoURL,
       email: credentials.user.email,
-      stats: {
-        averageSpeed: 0,
-        lastSpeed: 0,
-        averageErrors: 0,
-        lastErrors: 0,
-        samples: 0,
-      },
+      stats: this.wordssupSv.default_stats,
       stuckMode: true,
-      fetch_data: {
-        keyset: this.wordssupSv.default_keyset,
-        currentkey: 'E',
-        words_count: 15,
-      }
+      fetch_data: this.wordssupSv.default_fd
     })
   }
 

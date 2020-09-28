@@ -14,7 +14,12 @@ const routes: Routes = [
     path: 'multi',
     component: MultiplayerComponent,
     pathMatch: "full"
+  },
+  {
+    path: "**",
+    redirectTo: ''
   }
+
 ];
 
 @NgModule({

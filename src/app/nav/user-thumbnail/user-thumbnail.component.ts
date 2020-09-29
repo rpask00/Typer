@@ -18,7 +18,6 @@ export class UserThumbnailComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    console.log(this.btn)
   }
 
   logIn() {

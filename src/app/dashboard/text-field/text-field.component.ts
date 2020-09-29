@@ -12,17 +12,14 @@ import { first } from 'rxjs/operators';
 export class TextFieldComponent implements OnInit {
 
   sample: string[];
-  corrects: boolean[];
-  wrongs: boolean[];
   active: number = 0;
   mistakes_count: number = 0;
-  words_count: number = 0;
   firsttry: boolean = true;
   time: number = 0;
   samplelength: number = 0;
   timeInterval: NodeJS.Timeout
-  rows: any[][]
   current_keyset: any = {}
+  sample_words: string[]
 
   constructor(
     private typingSv: TypingService,
@@ -33,10 +30,8 @@ export class TextFieldComponent implements OnInit {
     this.initSample()
   }
 
-  @HostListener('window:keydown', ['$event'])
-  handleKeyboardEvent(event: KeyboardEvent) {
+  handleClick(key: string) {
     let iSstuckMode: boolean = this.typingSv.get_mode()
-    let key: string = event.key;
     let corect_key: string = this.sample[this.active]
 
     this.update_keyset(corect_key, key)
@@ -47,11 +42,6 @@ export class TextFieldComponent implements OnInit {
     if (this.firsttry && this.active == 0)
       this.timeInterval = setInterval(() => this.time++, 1000)
 
-
-    if (this.firsttry) {
-      this.corrects[this.active] = key == corect_key
-      this.wrongs[this.active] = key != corect_key
-    }
 
     if (key == corect_key) {
       this.active++
@@ -93,51 +83,18 @@ export class TextFieldComponent implements OnInit {
   }
 
   async initSample() {
-    this.current_keyset = await (await this.typingSv.get_keyset$()).pipe(first()).toPromise()
-
-    let sample_words: string[] = await this.typingSv.get_sample_words()
-    this.words_count = sample_words.length
-    this.sample = sample_words.map(word => word.toLowerCase()).join('_').split('')
-
-    this.rows = this.split_into_equal_rows(sample_words)
-
-    this.samplelength = this.sample.length
-    this.corrects = this.sample.map(e => false)
-    this.wrongs = this.sample.map(e => false)
     this.active = 0
     this.mistakes_count = 0
     this.time = 0
+    this.current_keyset = await (await this.typingSv.get_keyset$()).pipe(first()).toPromise()
+    this.sample_words = await this.typingSv.get_sample_words()
+    this.sample = this.sample_words.map(word => word.toLowerCase()).join('_').split('')
+    this.samplelength = this.sample.length
 
   }
-
-
-
-  split_into_equal_rows(sample_words: string[]) {
-    let rows: string[][] = []
-    let curentlent: number = 0
-    let rows_count: number = 0
-    let index: number = 0
-
-    for (let word of sample_words) {
-      curentlent += word.length + 1
-      index = Math.floor(curentlent / 25)
-
-      if (index == rows_count) {
-        rows.push([])
-        rows_count++
-      }
-      rows[index].push(word)
-    }
-
-    rows = rows.map(row => row.join('_').split('').concat(['_']))
-    rows[index].pop()
-
-    index = 0
-    return rows.map(row => row.map(sign => [sign, index++]))
-  }
-
 
   loadSample() {
+    console.log(this.time)
     let speed: number = this.samplelength / this.time * 60 / 4.5
     speed = Math.round(speed)
     this.typingSv.update_stats(speed, this.mistakes_count)

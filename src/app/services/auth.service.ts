@@ -4,7 +4,7 @@ import { Stats, User } from '../models/user-model';
 import { Observable, of } from 'rxjs';
 import { auth } from 'firebase';
 import { AngularFireDatabase } from '@angular/fire/database';
-import { switchMap, take, tap } from 'rxjs/operators';
+import { map, switchMap, take, tap } from 'rxjs/operators';
 import { WordsSupplyService } from './words-supply.service';
 
 @Injectable({
@@ -30,6 +30,10 @@ export class AuthService {
     let credentials = await this.afAuth.signInWithPopup(provider)
 
     this.createUser(credentials)
+  }
+
+  isloggedIn(): Observable<boolean> {
+    return this.afAuth.user.pipe(map(user => !!user))
   }
 
   logOut(): void {

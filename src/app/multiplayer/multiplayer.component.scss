@@ -1,15 +1,16 @@
 .box {
     display: flex;
-    height: 100vh;
+    margin-top: 10vh;
+    height: 80vh;
     width: 100%;
 }
 
 playerslist {
-    width: 10;
+    flex-grow: 20;
 
 }
 
 playground {
-    width: 90;
+    flex-grow: 80;
 
 }

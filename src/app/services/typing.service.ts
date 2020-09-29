@@ -72,7 +72,10 @@ export class TypingService {
     return (await this.get_fetch_data$()).pipe(map(fetch_data => fetch_data.currentkey))
   }
 
-  async get_sample_words(words_count?, currentkey?, keyset?): Promise<string[]> {
+  async get_sample_words(words_count = 20, allkeys?: boolean, currentkey?, keyset?): Promise<string[]> {
+    if (allkeys)
+      return await this.wordssupSv.getallWords(words_count)
+
     if (words_count && currentkey && keyset)
       return await this.wordssupSv.getWords(words_count, currentkey, keyset)
 

@@ -1,1 +1,19 @@
-<text-field></text-field>
+<div class="box" *ngIf='sample_words'>
+  <div class="players" *ngIf='isLoggedIn$ | async; else uneedtologin'>
+    <field (stroke)='handleClick($event)' [width]='width' [fnt_size]='fnt_size' [sample_words]='sample_words'></field>
+
+
+    <!-- <ng-template #waiting> -->
+      <div class="enemy">
+        <mat-spinner></mat-spinner>
+        <p> Waiting for second player..</p>
+      </div>
+    <!-- </ng-template> -->
+
+  </div>
+
+
+  <ng-template #uneedtologin>
+    <h1>You need first <a class='login' (click)=logIn()>Log in </a>to play..</h1>
+  </ng-template>
+</div>

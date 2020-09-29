@@ -59,6 +59,13 @@ export class WordsSupplyService {
     return JSON.parse(json)
   }
 
+  async getallWords(count): Promise<string[]> {
+    let res = await fetch("http://127.0.0.1:3000/allwords/" + count)
+    let json = await res.json()
+
+    return JSON.parse(json)
+  }
+
   get_next_key(key) {
     let nxt_key = this.order[this.order.indexOf(key) + 1]
     return nxt_key == ' ' ? '' : nxt_key

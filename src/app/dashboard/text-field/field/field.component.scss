@@ -1,0 +1,40 @@
+.playground {
+    // max-width: 100%;
+    min-height: 2vh;
+    background-color: var(--second-color);
+
+    p {
+        font-family: 'Ubuntu', sans-serif;
+        font-size: var(--playground_font_size);
+        padding: 30px;
+        color: black;
+
+    }
+}
+
+@keyframes blink {
+    from {
+        background-color: transparent;
+    }
+
+    to {
+        background-color: var(--fourth-color);
+    }
+}
+
+
+.active {
+    animation: blink .4s cubic-bezier(.8, -0.15, 0, .88) 0s infinite alternate;
+}
+
+.wrong {
+    background-color: rgb(255, 0, 0);
+}
+
+.correct {
+    color: rgba(0, 0, 0, 0.4);
+}
+
+.space {
+    color: rgba(0, 0, 0, 0.5);
+}

@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
-import { User } from '../../models/user-model';
-import { AuthService } from 'src/app/services/auth.service';
+import { Observable, of } from 'rxjs';
+import { Player } from 'src/app/models/player';
+import { MultiplayerService } from 'src/app/services/multiplayer.service';
+import { map, switchMap, take, tap } from 'rxjs/operators';
 
 @Component({
   selector: 'playerslist',
@@ -10,16 +11,24 @@ import { AuthService } from 'src/app/services/auth.service';
 })
 export class PlayerslistComponent implements OnInit {
 
-  user$: Observable<User> | Observable<null>
-  range = [1, 2, 3, 4]
+  players$: Observable<Player[]>
+  me$: Observable<Player>
+
   constructor(
-    private authSV: AuthService,
+    private multiplayerSv: MultiplayerService,
   ) {
-    this.user$ = authSV.user$
+    this.me$ = this.multiplayerSv.me$
   }
 
 
   ngOnInit(): void {
+    this.players$ = this.multiplayerSv.me$.pipe(switchMap(me => {
+      return this.multiplayerSv.players.pipe(map(players => players.filter(player => player.socket != me.socket)))
+    }))
+  }
+
+  invite(socket: string) {
+    console.log(socket)
   }
 
 }

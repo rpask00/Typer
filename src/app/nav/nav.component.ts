@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { User } from '../models/user-model';
+import { User } from 'firebase';
 import { Observable } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 import { TypingService } from '../services/typing.service';
@@ -15,11 +15,11 @@ export class NavComponent implements OnInit {
   constructor(
     private typingSv: TypingService,
     private authSV: AuthService,
-  ) {
-    this.user$ = authSV.user$
-  }
+  ) { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+    this.user$ = this.authSV.user$
+  }
 
   switchmode(e: any) {
     this.typingSv.switch_mode(e.target.checked)

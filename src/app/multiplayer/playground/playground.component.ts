@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { User } from 'firebase';
 import { Observable, of } from 'rxjs';
 import { AuthService } from 'src/app/services/auth.service';
 import { MultiplayerService } from 'src/app/services/multiplayer.service';
@@ -16,6 +17,7 @@ export class PlaygroundComponent implements OnInit {
   fnt_size: number = 25
   active: number = 0
   isLoggedIn$: Observable<boolean>
+  user$: Observable<User>
   enemy$: Observable<any>
   lock: boolean = true
 
@@ -26,17 +28,20 @@ export class PlaygroundComponent implements OnInit {
   ) { }
 
   async ngOnInit() {
+    this.isLoggedIn$ = this.authSv.isloggedIn()
+    this.user$ = this.authSv.user$
     await this.initSample()
 
-    // this.multiplayerSv
+    this.user$.subscribe(user => {
+      if (user)
+        this.multiplayerSv.createPlayer(user)
+    })
 
   }
 
   async initSample() {
     this.sample_words = await this.typingSv.get_sample_words(15, true)
     this.sample = this.sample_words.map(word => word.toLowerCase()).join('_').split('')
-    this.isLoggedIn$ = this.authSv.isloggedIn()
-    this.isLoggedIn$.subscribe(console.log)
     this.enemy$ = of(false)
   }
 

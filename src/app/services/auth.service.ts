@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth'
-import { Stats, User } from '../models/user-model';
+import { Stats } from '../models/user-model';
 import { Observable, of } from 'rxjs';
-import { auth } from 'firebase';
 import { AngularFireDatabase } from '@angular/fire/database';
 import { map, switchMap, take, tap } from 'rxjs/operators';
 import { WordsSupplyService } from './words-supply.service';
+import { auth, User } from 'firebase';
 
 @Injectable({
   providedIn: 'root'
@@ -19,10 +19,7 @@ export class AuthService {
     private adDatabase: AngularFireDatabase,
     private wordssupSv: WordsSupplyService
   ) {
-    this.user$ = this.afAuth.user.pipe(switchMap(user => {
-      if (user) return this.adDatabase.object('users/' + user.uid).valueChanges() as Observable<User>
-      return of(null)
-    }))
+    this.user$ = this.afAuth.user
   }
 
   async logIn() {
@@ -62,9 +59,5 @@ export class AuthService {
       if (user) this.adDatabase.object('users/' + user.uid + '/fetch_data').set(f_d)
     })
   }
-
-
-
-
 
 }

@@ -111,7 +111,8 @@ export class FieldComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.driverSub.unsubscribe()
+    if (this.driverSub)
+      this.driverSub.unsubscribe()
   }
 }
 

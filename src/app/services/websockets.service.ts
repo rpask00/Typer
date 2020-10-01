@@ -1,18 +1,25 @@
-import { Injectable } from '@angular/core';
-import { Observable, forkJoin } from 'rxjs';
-import { take } from 'rxjs/operators';
+import { Injectable, OnInit } from '@angular/core';
+import { Observable, forkJoin, BehaviorSubject } from 'rxjs';
+import { first, take } from 'rxjs/operators';
 import * as io from 'socket.io-client';
+import { Player } from '../models/player';
 
 @Injectable({
   providedIn: 'root'
 })
 export class WebsocketsService {
   private socekt: any;
-  protected me: string
-  readonly url: string = 'https://ship-server-rp.herokuapp.com';
+  readonly url: string = 'http://127.0.0.1:3000'
+  private sockets = new BehaviorSubject<Player[]>([])
+  me$: Observable<Player>
 
   constructor() {
     this.socekt = io(this.url)
+    this.listen('players-share').subscribe((players: Player[]) => {
+      console.log(players)
+      this.sockets.next(players)
+    })
+    this.me$ = this.listen('me') as Observable<Player>
   }
 
   listen(eventName: string) {
@@ -23,15 +30,17 @@ export class WebsocketsService {
     })
   }
 
-  async emit(eventName: string, data: any) {
+  async emit(eventName: string, data?: any) {
     this.socekt.emit(eventName, data);
-    this.me = (await this.listen('me').pipe(take(1)).toPromise()) as string
   }
 
 
-  get socket$() {
-    this.listen('keys-share').subscribe(res => console.log(res, 'res'))
-    return this.listen('key-share')
+  get sockets$() {
+    return this.sockets.asObservable()
+  }
+
+  get me() {
+    return new Promise((res, rej) => res(this.me$.pipe(first()).toPromise()))
   }
 
 

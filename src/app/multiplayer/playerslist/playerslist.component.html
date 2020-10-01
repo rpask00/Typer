@@ -1,3 +1,4 @@
-<div class='list'>
-  <user-thumbnail [user]='user$' *ngFor='let r of range' btn='invite'></user-thumbnail>
+<div class='list' *ngIf='players$ | async as players'>
+  <user-thumbnail [player]='player' *ngFor='let player of players' btn='invite' (invitation)='invite($event)'>
+  </user-thumbnail>
 </div>

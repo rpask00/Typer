@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { AuthService } from 'src/app/services/auth.service';
+import { MultiplayerService } from 'src/app/services/multiplayer.service';
 import { TypingService } from 'src/app/services/typing.service';
 
 @Component({
@@ -14,17 +15,21 @@ export class PlaygroundComponent implements OnInit {
   sample: string[]
   fnt_size: number = 25
   active: number = 0
-  firsttry = true
   isLoggedIn$: Observable<boolean>
   enemy$: Observable<any>
+  lock: boolean = true
 
   constructor(
     private typingSv: TypingService,
-    private authSv: AuthService
+    private authSv: AuthService,
+    private multiplayerSv: MultiplayerService
   ) { }
 
   async ngOnInit() {
     await this.initSample()
+
+    // this.multiplayerSv
+
   }
 
   async initSample() {
@@ -35,19 +40,18 @@ export class PlaygroundComponent implements OnInit {
     this.enemy$ = of(false)
   }
 
-  handleClick(key: string) {
-
+  handleClick_me(key: string) {
     let corect_key: string = this.sample[this.active]
+
     if (key == ' ')
       key = '_'
 
-    if (key == corect_key) {
+    if (key == corect_key)
       this.active++
 
+  }
 
-    } else {
-      this.firsttry = false
-    }
+  handleClick_enemy(key: string) {
   }
 
   logIn() {

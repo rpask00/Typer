@@ -1,20 +1,22 @@
-import { Component, HostListener, Input, Output, EventEmitter, OnChanges } from '@angular/core';
+import { Component, HostListener, Input, Output, EventEmitter, OnChanges, OnInit, OnDestroy } from '@angular/core';
+import { Observable, Subscription } from 'rxjs';
 import { TypingService } from 'src/app/services/typing.service';
-import { rootCertificates } from 'tls';
 
 @Component({
   selector: 'field',
   templateUrl: './field.component.html',
   styleUrls: ['./field.component.scss']
 })
-export class FieldComponent implements OnChanges {
+export class FieldComponent implements OnInit, OnChanges, OnDestroy {
 
   @Output('stroke') stroke = new EventEmitter<string>();
   @Input('sample_words') sample_words: string[]
   @Input('width') width: number
+  @Input('lock') lock: boolean = false
   @Input('fnt_size') fnt_size: number = 40
+  @Input('driver') driver$: Observable<KeyboardEvent> | null = null
 
-
+  driverSub: Subscription
   corrects: boolean[];
   wrongs: boolean[];
   active: number = 0;
@@ -37,6 +39,11 @@ export class FieldComponent implements OnChanges {
     this.firsttry = true
 
     document.documentElement.style.setProperty('--playground_font_size', this.fnt_size + 'px')
+  }
+
+  ngOnInit() {
+    if (this.driver$)
+      this.driverSub = this.driver$.subscribe((event: KeyboardEvent) => this.handle(event))
   }
 
   split_into_equal_rows(sample_words: string[]) {
@@ -65,6 +72,16 @@ export class FieldComponent implements OnChanges {
 
   @HostListener('window:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
+    if (this.driver$)
+      return
+
+    this.handle(event)
+  }
+
+  private handle(event: KeyboardEvent) {
+    if (this.lock)
+      return
+
     let iSstuckMode: boolean = this.typingSv.get_mode()
     let key: string = event.key;
     let corect_key: string = this.sample[this.active]
@@ -91,7 +108,10 @@ export class FieldComponent implements OnChanges {
       else
         this.active++
     }
+  }
 
+  ngOnDestroy() {
+    this.driverSub.unsubscribe()
   }
 }
 

@@ -7,6 +7,8 @@ import { Fetch_Data, Stats } from '../models/user-model';
 
 export class WordsSupplyService {
 
+  SERVER = 'http://127.0.0.1:3000'
+
   constructor() { }
 
   default_fd: Fetch_Data = {
@@ -53,14 +55,14 @@ export class WordsSupplyService {
   order: string[] = 'ENITRLSAUODYCHGMPBKVWFZXQJ '.split('')
 
   async getWords(count, letter, keyset): Promise<string[]> {
-    let res = await fetch("http://127.0.0.1:3000/words/" + count + '/' + letter + '/' + keyset)
+    let res = await fetch(this.SERVER + "/words/" + count + '/' + letter + '/' + keyset)
     let json = await res.json()
 
     return JSON.parse(json)
   }
 
   async getallWords(count): Promise<string[]> {
-    let res = await fetch("http://127.0.0.1:3000/allwords/" + count)
+    let res = await fetch(this.SERVER + "/allwords/" + count)
     let json = await res.json()
 
     return JSON.parse(json)

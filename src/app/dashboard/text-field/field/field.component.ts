@@ -14,7 +14,7 @@ export class FieldComponent implements OnInit, OnChanges, OnDestroy {
   @Input('width') width: number
   @Input('lock') lock: boolean = false
   @Input('fnt_size') fnt_size: number = 40
-  @Input('driver') driver$: Observable<KeyboardEvent> | null = null
+  @Input('driver') driver: string | null = null
 
   driverSub: Subscription
   corrects: boolean[];
@@ -30,6 +30,11 @@ export class FieldComponent implements OnInit, OnChanges, OnDestroy {
   ) { }
 
   ngOnChanges(): void {
+    if (this.driver) {
+      this.handle(this.driver)
+      return
+    }
+
     this.active = 0
     this.sample = this.sample_words.map(word => word.toLowerCase()).join('_').split('')
     this.rows = this.split_into_equal_rows(this.sample_words)
@@ -41,11 +46,12 @@ export class FieldComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnInit() {
-    if (this.driver$)
-      this.driverSub = this.driver$.subscribe((event: KeyboardEvent) => this.handle(event))
   }
 
   split_into_equal_rows(sample_words: string[]) {
+    if (!sample_words.length)
+      return
+
     let rows: string[][] = []
     let curentlent: number = 0
     let rows_count: number = 0
@@ -71,18 +77,19 @@ export class FieldComponent implements OnInit, OnChanges, OnDestroy {
 
   @HostListener('window:keydown', ['$event'])
   handleKeyboardEvent(event: KeyboardEvent) {
-    if (this.driver$)
+    if (this.driver)
       return
 
     this.handle(event)
   }
 
-  private handle(event: KeyboardEvent) {
+  private handle(event: any) {
     if (this.lock)
       return
 
+
     let iSstuckMode: boolean = this.typingSv.get_mode()
-    let key: string = event.key;
+    let key: string = event.key ? event.key : event;
     let corect_key: string = this.sample[this.active]
 
     this.stroke.emit(key)

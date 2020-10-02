@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { User } from 'firebase';
 import { Observable, of } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { Player } from 'src/app/models/player';
 import { AuthService } from 'src/app/services/auth.service';
 import { MultiplayerService } from 'src/app/services/multiplayer.service';
@@ -13,7 +14,7 @@ import { TypingService } from 'src/app/services/typing.service';
 })
 export class PlaygroundComponent implements OnInit {
   width: number = 40;
-  sample_words: string[]
+  sample_words: string[] = []
   sample: string[]
   fnt_size: number = 25
   active: number = 0
@@ -24,38 +25,40 @@ export class PlaygroundComponent implements OnInit {
   invitation$: Observable<Player>
 
   constructor(
-    private typingSv: TypingService,
     private authSv: AuthService,
     private multiplayerSv: MultiplayerService
   ) { }
 
   async ngOnInit() {
     this.isLoggedIn$ = this.authSv.isloggedIn()
-    this.enemy$ = this.multiplayerSv.game$.asObservable()
+    this.enemy$ = this.multiplayerSv.game$
     this.user$ = this.authSv.user$
     this.invitation$ = this.multiplayerSv.invitation$
-    // this.invitation$ = of({
-    //   displayName: "Rafał Paśko",
-    //   photoURL: "https://lh3.googleusercontent.com/a-/AOh14GhFRFNkcPfCByUPJXQbBpQEftPovCl3XaoxpCIloA",
-    //   socket: 'sefessfesfssds'
-    // })
 
-
-    await this.initSample()
 
     this.user$.subscribe(user => {
       if (user)
         this.multiplayerSv.createPlayer(user)
+
+
     })
+
+    this.multiplayerSv.sample_words.asObservable().subscribe(sample_words => {
+      this.initSample(sample_words)
+    })
+
+    this.multiplayerSv.lock$.subscribe(lock => this.lock = lock)
 
   }
 
-  async initSample() {
-    this.sample_words = await this.typingSv.get_sample_words(15, true)
+  initSample(sample_words) {
+    this.sample_words = sample_words
     this.sample = this.sample_words.map(word => word.toLowerCase()).join('_').split('')
   }
 
   handleClick_me(key: string) {
+    this.multiplayerSv.type(key)
+
     let corect_key: string = this.sample[this.active]
 
     if (key == ' ')
@@ -63,6 +66,7 @@ export class PlaygroundComponent implements OnInit {
 
     if (key == corect_key)
       this.active++
+
 
   }
 

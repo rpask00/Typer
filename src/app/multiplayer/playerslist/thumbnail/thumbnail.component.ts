@@ -7,17 +7,18 @@ import { Player } from 'src/app/models/player';
   styleUrls: ['./thumbnail.component.scss']
 })
 export class ThumbnailComponent implements OnInit {
-  
+
   @Input('player') player: null | Player = null
-  @Output('invitation') invitation = new EventEmitter<string>()
+  @Input('showBtn') showBtn: boolean = true
+  @Output('invitation') invitation = new EventEmitter<Player>()
 
   constructor() { }
 
   ngOnInit(): void {
   }
 
-  invite(socket: string) {
-    this.invitation.emit(socket)
+  invite(player: Player) {
+    this.invitation.emit(player)
   }
 
 }

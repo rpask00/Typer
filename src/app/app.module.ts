@@ -18,6 +18,7 @@ import { PlaygroundComponent } from './multiplayer/playground/playground.compone
 import { UserThumbnailComponent } from './nav/user-thumbnail/user-thumbnail.component';
 import { FieldComponent } from './dashboard/text-field/field/field.component';
 import { ThumbnailComponent } from './multiplayer/playerslist/thumbnail/thumbnail.component';
+import { InvitationComponent } from './multiplayer/invitation/invitation.component';
 
 @NgModule({
   declarations: [
@@ -32,6 +33,7 @@ import { ThumbnailComponent } from './multiplayer/playerslist/thumbnail/thumbnai
     UserThumbnailComponent,
     FieldComponent,
     ThumbnailComponent,
+    InvitationComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,3 +1,5 @@
+<invitation *ngIf='invitation$ | async as invitaion' [invitaion]='invitaion'></invitation>
+
 <div class="box" *ngIf='sample_words'>
   <div class="players" *ngIf='isLoggedIn$ | async; else uneedtologin'>
 

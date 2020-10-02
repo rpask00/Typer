@@ -1,6 +1,6 @@
 <div class="user">
   <img [src]="player.photoURL" alt="">
   <p>{{player.displayName}} <br>
-    <button mat-button color="primary" (click)=invite(player.socket)>Invite</button>
+    <button mat-button color="primary" *ngIf='showBtn' (click)=invite(player)>Invite</button>
   </p>
 </div>

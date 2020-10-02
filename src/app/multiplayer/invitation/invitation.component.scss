@@ -1,0 +1,23 @@
+.box {
+    background-color: var(--fourth-color);
+    margin-left: 5%;
+    padding: 5px 0 5px 30px;
+    display: flex;
+    align-items: center;
+}
+
+h2 {
+    font-family: 'Ubuntu';
+}
+
+img {
+    width: 70px;
+    height: 70px;
+    margin: 10px;
+    border-radius: 50%;
+}
+
+button {
+    flex-grow: 1;
+    margin: 0 20px 0 20px;
+}

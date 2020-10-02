@@ -12,11 +12,13 @@ export class WebsocketsService {
   readonly url: string = 'http://127.0.0.1:3000'
   private sockets = new BehaviorSubject<Player[]>([])
   me$: Observable<Player>
+  me: Player
 
   constructor() {
     this.socekt = io(this.url)
     this.listen('players-share').subscribe((players: Player[]) => this.sockets.next(players))
     this.me$ = this.listen('me') as Observable<Player>
+    this.me$.pipe(first()).subscribe(me => this.me = me)
   }
 
   listen(eventName: string) {
@@ -36,9 +38,6 @@ export class WebsocketsService {
     return this.sockets.asObservable()
   }
 
-  get me() {
-    return new Promise((res, rej) => res(this.me$.pipe(first()).toPromise()))
-  }
-
+  
 
 }

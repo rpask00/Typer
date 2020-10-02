@@ -30,7 +30,6 @@ export class FieldComponent implements OnInit, OnChanges, OnDestroy {
   ) { }
 
   ngOnChanges(): void {
-    console.log(this.fnt_size)
     this.active = 0
     this.sample = this.sample_words.map(word => word.toLowerCase()).join('_').split('')
     this.rows = this.split_into_equal_rows(this.sample_words)

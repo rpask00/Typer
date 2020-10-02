@@ -15,10 +15,7 @@ export class WebsocketsService {
 
   constructor() {
     this.socekt = io(this.url)
-    this.listen('players-share').subscribe((players: Player[]) => {
-      console.log(players)
-      this.sockets.next(players)
-    })
+    this.listen('players-share').subscribe((players: Player[]) => this.sockets.next(players))
     this.me$ = this.listen('me') as Observable<Player>
   }
 

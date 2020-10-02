@@ -12,19 +12,13 @@ import { User } from 'firebase';
 
 export class UserThumbnailComponent implements OnInit {
 
-  @Input('user') user: Observable<User> | Observable<Player>
-  @Input('player') player: null | Player = null
-  @Input('btn') btn: 'logout' | 'invite' = 'logout'
-  @Output('invitation') invitation = new EventEmitter<string>()
+  @Input('user') user: Observable<User> | Observable<null>
 
   constructor(
     private authSV: AuthService,
   ) { }
 
   ngOnInit(): void {
-    if (this.player) {
-      this.user = of(this.player)
-    }
   }
 
   logIn() {
@@ -33,10 +27,6 @@ export class UserThumbnailComponent implements OnInit {
 
   logOut() {
     this.authSV.logOut()
-  }
-
-  invite(socket: string) {
-    this.invitation.emit(socket)
   }
 
 }

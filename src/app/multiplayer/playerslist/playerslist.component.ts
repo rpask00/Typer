@@ -23,12 +23,13 @@ export class PlayerslistComponent implements OnInit {
 
   ngOnInit(): void {
     this.players$ = this.multiplayerSv.me$.pipe(switchMap(me => {
-      return this.multiplayerSv.players.pipe(map(players => players.filter(player => player.socket != me.socket)))
+      return this.multiplayerSv.players.pipe(map(players => {
+        return players.filter(player => player.socket != me.socket)
+      }))
     }))
   }
 
   invite(socket: string) {
-    console.log(socket)
   }
 
 }

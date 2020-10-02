@@ -1,12 +1,11 @@
 <div class="user" *ngIf='user | async as u; else login'>
   <img [src]="u.photoURL" alt="">
   <p>{{u.displayName}} <br>
-    <button mat-button color="primary" *ngIf='btn == "logout"' (click)=logOut()>Log out</button>
-    <button mat-button color="primary" *ngIf='btn == "invite"' (click)=invite(u.socket)>Invite</button>
+    <button mat-button color="primary" (click)=logOut()>Log out</button>
   </p>
 </div>
 
+
 <ng-template #login>
-  <button class='login' *ngIf='btn == "logout"' mat-raised-button color="primary" (click)=logIn()>Log in with
-    Google</button>
+  <button class='login' mat-raised-button color="primary" (click)=logIn()>Log in with Google</button>
 </ng-template>

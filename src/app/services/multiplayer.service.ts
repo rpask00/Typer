@@ -14,7 +14,6 @@ export class MultiplayerService {
   ) { }
 
   createPlayer(user: User) {
-    console.log(user)
     this.socketSV.emit('creating-connection', user)
   }
 

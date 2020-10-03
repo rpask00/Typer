@@ -3,18 +3,28 @@
 <div class="box" *ngIf='sample_words'>
   <div class="players" *ngIf='isLoggedIn$ | async; else uneedtologin'>
 
-    <div class="player">
-      <field (stroke)='handleClick_me($event)' [lock]='lock' [width]='width' [fnt_size]='fnt_size'
-        [sample_words]='sample_words'></field>
-    </div>
+    <field 
+      (stroke)='type($event)' 
+      [result]='resultMe' 
+      [lock]='lock' 
+      [width]='width' 
+      [fnt_size]='fnt_size'
+      [sample_words]='sample_words'>
+    </field>
 
-    <div class="enemy" *ngIf='game$ | async; else waiting'>
-      <field [lock]='lock' [width]='width' [fnt_size]='fnt_size' [sample_words]='sample_words' [driver]=game$>
+    <div *ngIf='game$ | async; else waiting'>
+      <field 
+      [result]='resultOpponent' 
+        [lock]='lock' 
+        [width]='width' 
+        [fnt_size]='fnt_size' 
+        [sample_words]='sample_words'
+        [driver]=game$>
       </field>
     </div>
 
     <ng-template #waiting>
-      <div class="enemy">
+      <div class='waiting'>
         <mat-spinner></mat-spinner>
         <p> Waiting for second player..</p>
       </div>

@@ -1,5 +1,6 @@
 import { Component, HostListener, Input, Output, EventEmitter, OnChanges, OnInit, OnDestroy } from '@angular/core';
 import { Observable, Subscription } from 'rxjs';
+import { MultiplayerService } from 'src/app/services/multiplayer.service';
 import { TypingService } from 'src/app/services/typing.service';
 
 @Component({
@@ -9,37 +10,35 @@ import { TypingService } from 'src/app/services/typing.service';
 })
 export class FieldComponent implements OnInit, OnChanges, OnDestroy {
 
-  @Output('stroke') stroke = new EventEmitter<string>();
   @Input('sample_words') sample_words: string[]
   @Input('width') width: number
+  @Input('result') result: string = ''
   @Input('lock') lock: boolean = false
   @Input('fnt_size') fnt_size: number = 40
   @Input('driver') driver: Observable<string> | null = null
+  @Output('stroke') stroke = new EventEmitter<string>();
 
-  driverSub: Subscription
+  private driverSub: Subscription
+  private firsttry: boolean = true;
+  private sample: string[]
+  rows: any[][]
+  active: number = 0;
   corrects: boolean[];
   wrongs: boolean[];
-  active: number = 0;
-  firsttry: boolean = true;
-  rows: any[][]
-  sample: string[]
-
 
   constructor(
     private typingSv: TypingService,
+    private multiplayerSv: MultiplayerService
   ) { }
 
   ngOnChanges(): void {
-    console.log('change')
     this.initSample()
+
   }
 
   ngOnInit() {
     if (this.driver)
-      this.driver.subscribe(key => {
-        console.log(key)
-        this.handle(key)
-      })
+      this.driverSub = this.driver.subscribe(key => this.handle(key))
   }
 
   initSample() {
@@ -48,8 +47,8 @@ export class FieldComponent implements OnInit, OnChanges, OnDestroy {
     this.rows = this.split_into_equal_rows(this.sample_words)
     this.corrects = this.sample.map(e => false)
     this.wrongs = this.sample.map(e => false)
-    document.documentElement.style.setProperty('--playground_font_size', this.fnt_size + 'px')
     this.firsttry = true
+    document.documentElement.style.setProperty('--playground_font_size', this.fnt_size + 'px')
   }
 
   split_into_equal_rows(sample_words: string[]) {
@@ -91,12 +90,14 @@ export class FieldComponent implements OnInit, OnChanges, OnDestroy {
     if (this.lock || !this.sample)
       return
 
-    console.log(event)
-
     let iSstuckMode: boolean = this.typingSv.get_mode()
     let key: string = event.key ? event.key : event;
     let corect_key: string = this.sample[this.active]
 
+    if (this.driver && this.active == this.sample.length)
+      return this.multiplayerSv.endGame()
+
+      
     this.stroke.emit(key)
 
     if (key == ' ')

@@ -1,4 +1,4 @@
-<div class="playground" (keydown)="handleKeyboardEvent($event)">
+<div [ngClass]='result' class="playground" (keydown)="handleKeyboardEvent($event)">
     <p>
       <span  *ngFor="let row of rows">
         <span 

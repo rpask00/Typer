@@ -5,7 +5,6 @@ import { tap } from 'rxjs/operators';
 import { Player } from 'src/app/models/player';
 import { AuthService } from 'src/app/services/auth.service';
 import { MultiplayerService } from 'src/app/services/multiplayer.service';
-import { TypingService } from 'src/app/services/typing.service';
 
 @Component({
   selector: 'playground',
@@ -22,7 +21,11 @@ export class PlaygroundComponent implements OnInit {
   isLoggedIn$: Observable<boolean>
   user$: Observable<User>
   game$: Observable<string>
+  endGame$: Observable<string>
   invitation$: Observable<Player>
+  opponent: Player
+  resultMe = ''
+  resultOpponent = ''
 
   constructor(
     private authSv: AuthService,
@@ -33,18 +36,33 @@ export class PlaygroundComponent implements OnInit {
     this.isLoggedIn$ = this.authSv.isloggedIn()
     this.game$ = this.multiplayerSv.game$
     this.user$ = this.authSv.user$
-    this.invitation$ = this.multiplayerSv.invitation$
+    this.endGame$ = this.multiplayerSv.onEndGame$
+
+    this.invitation$ = this.multiplayerSv.invitation$.pipe(tap(player => {
+      if (player) this.opponent = player
+    }))
 
     this.user$.subscribe(user => {
       if (user)
         this.multiplayerSv.createPlayer(user)
     })
 
-    this.multiplayerSv.sample_words.asObservable().subscribe(sample_words => {
+    this.multiplayerSv.sample_words$.subscribe(sample_words => {
       this.initSample(sample_words)
     })
 
     this.multiplayerSv.lock$.subscribe(lock => this.lock = lock)
+
+    this.endGame$.subscribe(res => {
+      this.resultMe = res == 'win' ? 'win' : 'lose'
+      this.resultOpponent = res == 'win' ? 'lose' : 'win'
+
+      setTimeout(() => {
+        this.resultMe = ''
+        this.resultOpponent = ''
+      }, 5000);
+    })
+
   }
 
   initSample(sample_words) {
@@ -52,19 +70,10 @@ export class PlaygroundComponent implements OnInit {
     this.sample = this.sample_words.map(word => word.toLowerCase()).join('_').split('')
   }
 
-  handleClick_me(key: string) {
+  type(key: string) {
     this.multiplayerSv.type(key)
-    let corect_key: string = this.sample[this.active]
-
-    if (key == ' ')
-      key = '_'
-
-    if (key == corect_key)
-      this.active++
   }
 
-  handleClick_enemy(key: string) {
-  }
 
   logIn() {
     this.authSv.logIn()

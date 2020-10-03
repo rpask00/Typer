@@ -12,21 +12,27 @@ import { WebsocketsService } from './websockets.service';
 export class MultiplayerService {
 
   game = new BehaviorSubject<string>('')
-  gameSub: Subscription
-  invitation = new BehaviorSubject<Player | null>(null)
+  private gameSub: Subscription
+
+  private invitation = new BehaviorSubject<Player | null>(null)
   gamelock = new BehaviorSubject<boolean>(true)
-  gameInfo = null
-  sample_words = new BehaviorSubject<string[]>([])
-  sample_words_in_invitation: string[]
+
+  private gameInfo = null
+  private sample_words = new BehaviorSubject<string[]>([])
+  private sample_words_in_invitation: string[]
+
+  onEndGame$: Observable<string>
 
   constructor(
     private socketSV: WebsocketsService,
     private typingSv: TypingService,
   ) {
+
     this.socketSV.listen('invitation').subscribe((data: { from: Player, sample_words: string[] }) => {
       this.invitation.next(data.from)
       this.sample_words_in_invitation = data.sample_words
     })
+
     this.socketSV.listen('game-begin').pipe(first()).subscribe(data => {
       this.gameInfo = data
       this.game.next(' ')
@@ -40,11 +46,22 @@ export class MultiplayerService {
         this.game.next(key)
       })
     })
+
+    this.onEndGame$ = socketSV.listen('onEndGame') as Observable<string>
+    this.onEndGame$.subscribe(res => {
+      this.gameSub.unsubscribe()
+      this.gamelock.next(true)
+      setTimeout(() => this.game.next(''), (5000))
+    })
   }
 
   async createPlayer(user: User) {
     this.sample_words.next(await this.typingSv.get_sample_words(15, true))
     this.socketSV.emit('creating-connection', user)
+  }
+
+  async disconnect() {
+    this.socketSV.me$.pipe(take(1)).subscribe(me => this.socketSV.emit('disconnect', me))
   }
 
   invite(player: Player) {
@@ -77,6 +94,11 @@ export class MultiplayerService {
     this.invitation.next(null)
   }
 
+  endGame() {
+    this.socketSV.emit('endGame', this.gameInfo)
+
+  }
+
   get players(): Observable<Player[]> {
     return this.socketSV.sockets$
   }
@@ -96,5 +118,10 @@ export class MultiplayerService {
   get invitation$() {
     return this.invitation.asObservable()
   }
+
+  get sample_words$() {
+    return this.sample_words.asObservable()
+  }
+
 
 }

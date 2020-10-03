@@ -33,7 +33,8 @@ export class MultiplayerService {
       this.sample_words_in_invitation = data.sample_words
     })
 
-    this.socketSV.listen('game-begin').pipe(first()).subscribe(data => {
+    this.socketSV.listen('game-begin').subscribe(data => {
+      console.log('begina')
       this.gameInfo = data
       this.game.next(' ')
       if (this.sample_words_in_invitation)
@@ -60,7 +61,7 @@ export class MultiplayerService {
     this.socketSV.emit('creating-connection', user)
   }
 
-  async disconnect() {
+  disconnect() {
     this.socketSV.me$.pipe(take(1)).subscribe(me => this.socketSV.emit('disconnect', me))
   }
 

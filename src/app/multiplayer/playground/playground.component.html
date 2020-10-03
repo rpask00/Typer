@@ -8,9 +8,9 @@
         [sample_words]='sample_words'></field>
     </div>
 
-    <div class="enemy" *ngIf='enemy$ | async as enemy_input; else waiting'>
-      <field (stroke)='handleClick_enemy($event)' [lock]=true [width]='width' [fnt_size]='fnt_size'
-        [sample_words]='sample_words' [driver]=enemy_input></field>
+    <div class="enemy" *ngIf='game$ | async as game_input; else waiting'>
+      <field [lock]='lock' [width]='width' [fnt_size]='fnt_size' [sample_words]='sample_words' [driver]=game_input>
+      </field>
     </div>
 
     <ng-template #waiting>

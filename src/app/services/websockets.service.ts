@@ -38,6 +38,6 @@ export class WebsocketsService {
     return this.sockets.asObservable()
   }
 
-  
+
 
 }

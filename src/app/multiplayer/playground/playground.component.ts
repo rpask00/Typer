@@ -21,7 +21,7 @@ export class PlaygroundComponent implements OnInit {
   lock: boolean = true
   isLoggedIn$: Observable<boolean>
   user$: Observable<User>
-  enemy$: Observable<string>
+  game$: Observable<string>
   invitation$: Observable<Player>
 
   constructor(
@@ -31,16 +31,13 @@ export class PlaygroundComponent implements OnInit {
 
   async ngOnInit() {
     this.isLoggedIn$ = this.authSv.isloggedIn()
-    this.enemy$ = this.multiplayerSv.game$
+    this.game$ = this.multiplayerSv.game$
     this.user$ = this.authSv.user$
     this.invitation$ = this.multiplayerSv.invitation$
-
 
     this.user$.subscribe(user => {
       if (user)
         this.multiplayerSv.createPlayer(user)
-
-
     })
 
     this.multiplayerSv.sample_words.asObservable().subscribe(sample_words => {
@@ -48,7 +45,6 @@ export class PlaygroundComponent implements OnInit {
     })
 
     this.multiplayerSv.lock$.subscribe(lock => this.lock = lock)
-
   }
 
   initSample(sample_words) {
@@ -58,7 +54,6 @@ export class PlaygroundComponent implements OnInit {
 
   handleClick_me(key: string) {
     this.multiplayerSv.type(key)
-
     let corect_key: string = this.sample[this.active]
 
     if (key == ' ')
@@ -66,8 +61,6 @@ export class PlaygroundComponent implements OnInit {
 
     if (key == corect_key)
       this.active++
-
-
   }
 
   handleClick_enemy(key: string) {

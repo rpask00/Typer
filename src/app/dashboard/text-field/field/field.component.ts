@@ -32,20 +32,26 @@ export class FieldComponent implements OnInit, OnChanges, OnDestroy {
   ngOnChanges(): void {
     if (this.driver) {
       this.handle(this.driver)
-      return
+    } else {
+      this.active = 0
+      this.sample = this.sample_words.map(word => word.toLowerCase()).join('_').split('')
+      this.rows = this.split_into_equal_rows(this.sample_words)
+      this.corrects = this.sample.map(e => false)
+      this.wrongs = this.sample.map(e => false)
+      document.documentElement.style.setProperty('--playground_font_size', this.fnt_size + 'px')
+      this.firsttry = true
     }
 
+  }
+
+  ngOnInit() {
     this.active = 0
     this.sample = this.sample_words.map(word => word.toLowerCase()).join('_').split('')
     this.rows = this.split_into_equal_rows(this.sample_words)
     this.corrects = this.sample.map(e => false)
     this.wrongs = this.sample.map(e => false)
-    this.firsttry = true
-
     document.documentElement.style.setProperty('--playground_font_size', this.fnt_size + 'px')
-  }
-
-  ngOnInit() {
+    this.firsttry = true
   }
 
   split_into_equal_rows(sample_words: string[]) {
@@ -84,9 +90,8 @@ export class FieldComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   private handle(event: any) {
-    if (this.lock)
+    if (this.lock || !this.sample)
       return
-
 
     let iSstuckMode: boolean = this.typingSv.get_mode()
     let key: string = event.key ? event.key : event;

@@ -30,7 +30,8 @@ export class MultiplayerService {
     this.socketSV.listen('game-begin').pipe(first()).subscribe(data => {
       this.gameInfo = data
       this.game.next(' ')
-      this.sample_words.next(this.sample_words_in_invitation)
+      if (this.sample_words_in_invitation)
+        this.sample_words.next(this.sample_words_in_invitation)
 
       this.gamelock.next(false)
       this.invitation.next(null)
@@ -47,11 +48,12 @@ export class MultiplayerService {
   }
 
   invite(player: Player) {
-    debugger
-    this.socketSV.emit('invite', {
-      from: this.socketSV.me,
-      to: player,
-      sample_words: this.sample_words
+    this.sample_words.pipe(take(1)).subscribe(sample_words => {
+      this.socketSV.emit('invite', {
+        from: this.socketSV.me,
+        to: player,
+        sample_words: sample_words
+      })
     })
   }
 

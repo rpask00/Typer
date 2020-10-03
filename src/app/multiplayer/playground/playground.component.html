@@ -8,8 +8,8 @@
         [sample_words]='sample_words'></field>
     </div>
 
-    <div class="enemy" *ngIf='game$ | async as game_input; else waiting'>
-      <field [lock]='lock' [width]='width' [fnt_size]='fnt_size' [sample_words]='sample_words' [driver]=game_input>
+    <div class="enemy" *ngIf='game$ | async; else waiting'>
+      <field [lock]='lock' [width]='width' [fnt_size]='fnt_size' [sample_words]='sample_words' [driver]=game$>
       </field>
     </div>
 

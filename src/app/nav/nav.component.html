@@ -2,17 +2,17 @@
 
   <user-thumbnail [user]='user$'></user-thumbnail>
 
-  <a class='navel' routerLink=''><i class="demo-icon icon-gamepad"></i> Practice</a>
-  <a class='navel' routerLink='stats'><i class="demo-icon icon-wrench-circled"></i>Settings</a>
+  <a class='navel' routerLink=''><i class="demo-icon icon-gamepad"></i>Practice</a>
+  <!-- <a class='navel' routerLink='stats'><i class="demo-icon icon-wrench-circled"></i>Settings</a> -->
   <a class='navel' routerLink='multi'><i class="demo-icon icon-users"></i>Multiplayer</a>
   <a class='navel' routerLink='stats'><i class="demo-icon icon-chart-line"></i>Stats</a>
 
   <!-- Rounded switch -->
-  <div class='navel mode'>
-    Stuck mode
+  <!-- <div class='navel mode'>
+    Override mode
     <label class="switch">
-      <input type="checkbox" [checked]=true (change)='switchmode($event)'>
+      <input type="checkbox" [checked]=false (change)='switchmode($event)'>
       <span class="slider round"></span>
     </label>
-  </div>
+  </div> -->
 </div>

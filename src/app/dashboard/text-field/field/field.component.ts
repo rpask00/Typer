@@ -15,6 +15,7 @@ export class FieldComponent implements OnInit, OnChanges, OnDestroy {
   @Input('result') result: string = ''
   @Input('lock') lock: boolean = false
   @Input('fnt_size') fnt_size: number = 40
+  @Input('opacity') opacity: number = 0
   @Input('driver') driver: Observable<string> | null = null
   @Output('stroke') stroke = new EventEmitter<string>();
 
@@ -37,8 +38,12 @@ export class FieldComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnInit() {
-    if (this.driver)
+    if (this.driver) {
       this.driverSub = this.driver.subscribe(key => this.handle(key))
+      document.documentElement.style.setProperty('--opacity', String(this.opacity))
+    }
+
+
   }
 
   initSample() {
@@ -48,7 +53,11 @@ export class FieldComponent implements OnInit, OnChanges, OnDestroy {
     this.corrects = this.sample.map(e => false)
     this.wrongs = this.sample.map(e => false)
     this.firsttry = true
+    console.log(this.opacity)
     document.documentElement.style.setProperty('--playground_font_size', this.fnt_size + 'px')
+
+    // if (this.bgc)
+    //   document.documentElement.style.setProperty('--second-color', this.bgc)
   }
 
   split_into_equal_rows(sample_words: string[]) {
@@ -94,10 +103,10 @@ export class FieldComponent implements OnInit, OnChanges, OnDestroy {
     let key: string = event.key ? event.key : event;
     let corect_key: string = this.sample[this.active]
 
-    if (this.driver && this.active == this.sample.length)
+    if (this.driver && this.active == this.sample.length - 1)
       return this.multiplayerSv.endGame()
 
-      
+
     this.stroke.emit(key)
 
     if (key == ' ')

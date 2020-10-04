@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { User } from 'firebase';
 import { BehaviorSubject, Observable, Subscription } from 'rxjs';
-import { first, take } from 'rxjs/operators';
+import { take } from 'rxjs/operators';
 import { Player } from '../models/player';
 import { TypingService } from './typing.service';
 import { WebsocketsService } from './websockets.service';

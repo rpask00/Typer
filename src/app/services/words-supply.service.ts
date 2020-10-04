@@ -7,7 +7,7 @@ import { Fetch_Data, Stats } from '../models/user-model';
 
 export class WordsSupplyService {
 
-  SERVER = 'http://127.0.0.1:3000'
+  SERVER = 'https://typerserv.herokuapp.com'
 
   constructor() { }
 

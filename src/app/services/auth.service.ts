@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth'
 import { Stats } from '../models/user-model';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { AngularFireDatabase } from '@angular/fire/database';
-import { map, switchMap, take, tap } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
 import { WordsSupplyService } from './words-supply.service';
 import { auth, User } from 'firebase';
 
@@ -16,7 +16,7 @@ export class AuthService {
 
   constructor(
     private afAuth: AngularFireAuth,
-    private adDatabase: AngularFireDatabase,
+    private afDatabase: AngularFireDatabase,
     private wordssupSv: WordsSupplyService
   ) {
     this.user$ = this.afAuth.user
@@ -38,25 +38,30 @@ export class AuthService {
   }
 
   createUser(credentials: auth.UserCredential): void {
-    this.adDatabase.object('users/' + credentials.user.uid).set({
-      name: credentials.user.displayName,
-      photoUrl: credentials.user.photoURL,
-      email: credentials.user.email,
-      stats: this.wordssupSv.default_stats,
-      stuckMode: true,
-      fetch_data: this.wordssupSv.default_fd
+    this.afDatabase.object('users/' + credentials.user.uid).valueChanges().pipe(take(1)).subscribe(user => {
+      if (!user)
+        this.afDatabase.object('users/' + credentials.user.uid).set({
+          name: credentials.user.displayName,
+          photoUrl: credentials.user.photoURL,
+          email: credentials.user.email,
+          stats: this.wordssupSv.default_stats,
+          stuckMode: true,
+          fetch_data: this.wordssupSv.default_fd
+        })
     })
+
+
   }
 
   updateStatsInDB(stats: Stats): void {
     this.afAuth.user.pipe(take(1)).subscribe(user => {
-      if (user) this.adDatabase.object('users/' + user.uid + '/stats').set(stats)
+      if (user) this.afDatabase.object('users/' + user.uid + '/stats').set(stats)
     })
   }
 
   updateFetchDataInDB(f_d: any): void {
     this.afAuth.user.pipe(take(1)).subscribe(user => {
-      if (user) this.adDatabase.object('users/' + user.uid + '/fetch_data').set(f_d)
+      if (user) this.afDatabase.object('users/' + user.uid + '/fetch_data').set(f_d)
     })
   }
 

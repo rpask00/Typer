@@ -8,6 +8,7 @@
     --fifth-color: #E14B56;
 
     --playground_font_size: 40px;
+    --opacity: 0;
 
 }
 
@@ -15,6 +16,7 @@ body {
     background-color: var(--main-color);
     // font-family: Roboto, "Helvetica Neue", sans-serif;
     margin: 0;
+    overflow-x: hidden;
 }
 
 html,

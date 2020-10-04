@@ -1,3 +1,7 @@
-div {
-    flex-grow: 1;
+h1 {
+    font-family: 'Ubuntu';
+
+    .count {
+        color: var(--third-color);
+    }
 }

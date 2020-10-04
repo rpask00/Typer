@@ -22,7 +22,7 @@ export class NavComponent implements OnInit {
   }
 
   switchmode(e: any) {
-    this.typingSv.switch_mode(e.target.checked)
+    this.typingSv.switch_mode(!e.target.checked)
   }
 
 

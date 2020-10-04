@@ -1,5 +1,5 @@
-import { Injectable, OnInit } from '@angular/core';
-import { Observable, forkJoin, BehaviorSubject } from 'rxjs';
+import { Injectable } from '@angular/core';
+import { Observable, BehaviorSubject } from 'rxjs';
 import { first, take } from 'rxjs/operators';
 import * as io from 'socket.io-client';
 import { Player } from '../models/player';
@@ -9,7 +9,7 @@ import { Player } from '../models/player';
 })
 export class WebsocketsService {
   private socekt: any;
-  readonly url: string = 'http://127.0.0.1:3000'
+  readonly url: string = 'https://typerserv.herokuapp.com'
   private sockets = new BehaviorSubject<Player[]>([])
   me$: Observable<Player>
   me: Player
